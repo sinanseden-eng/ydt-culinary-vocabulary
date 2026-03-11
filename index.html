@@ -109,6 +109,64 @@
         /* Millionaire specific */
         .ladder-step.active { background-color: var(--gold-accent); color: white; font-weight: bold; border-radius: 6px; border: 1px solid white; }
         .ladder-step.passed { color: var(--gold-light); opacity: 0.7; }
+        
+        /* Tycoon Board Specifics */
+        .tycoon-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 700px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+        }
+        .tycoon-space {
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            border: 2px solid #b8976b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4px;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        .tycoon-corner {
+            background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
+            border-color: #7f1d1d;
+            color: #7f1d1d;
+        }
+        .tycoon-center {
+            grid-column: 2 / 5;
+            grid-row: 2 / 5;
+            background: rgba(39, 39, 42, 0.9);
+            border-radius: 16px;
+            border: 2px dashed #b8976b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .player-token {
+            position: absolute;
+            font-size: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 20;
+            filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
+        }
+        .dice-roll-anim {
+            animation: diceSpin 0.5s ease-in-out;
+        }
+        @keyframes diceSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.5); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col items-center justify-center">
@@ -126,7 +184,7 @@
                 <p class="text-xl text-zinc-400 font-light">Master the vocabulary of the kitchen, the farm, and the dining room.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Game 1 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('speedrun')">
                     <div>
@@ -197,14 +255,24 @@
                     <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Enter Kitchen</button>
                 </div>
 
-                <!-- Game 8 (Baamboozle Style) -->
-                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer lg:col-span-2" onclick="startGame('baamboozle')">
+                <!-- Game 8 -->
+                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('baamboozle')">
                     <div>
                         <div class="text-5xl mb-4 drop-shadow-md">🍕</div>
                         <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Kitchen Chaos</h2>
                         <p class="text-zinc-300 text-sm mb-6">Pick tiles to answer questions, steal points, or trigger chaotic kitchen disasters!</p>
                     </div>
                     <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Start Service</button>
+                </div>
+
+                <!-- Game 9 (NEW: Gastronomy Tycoon) -->
+                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('tycoon')">
+                    <div>
+                        <div class="text-5xl mb-4 drop-shadow-md">🎲</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Gastronomy Tycoon</h2>
+                        <p class="text-zinc-300 text-sm mb-6">Monopoly style! Roll the dice, land on restaurant spaces, and earn Culinary Coins.</p>
+                    </div>
+                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Roll the Dice</button>
                 </div>
             </div>
         </div>
@@ -583,6 +651,87 @@
             </div>
         </div>
 
+        <!-- ================= VIEW 9: GASTRONOMY TYCOON (Monopoly Style) ================= -->
+        <div id="view-tycoon" class="view">
+            <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
+                    <div class="text-3xl font-display text-amber-400">Gastronomy Tycoon</div>
+                </div>
+
+                <div class="grid lg:grid-cols-4 gap-8">
+                    <!-- Left: Player Stats -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-blue-900/60 border-2 border-blue-500/50 p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all" id="tyc-panel-0">
+                            <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
+                            <h3 class="text-blue-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>👨‍🍳</span> Team A</h3>
+                            <div class="text-4xl font-black text-white font-mono">$<span id="tyc-score-0">1000</span></div>
+                        </div>
+                        
+                        <div class="bg-rose-900/60 border-2 border-rose-500/50 p-6 rounded-2xl shadow-lg relative overflow-hidden opacity-50 transition-all" id="tyc-panel-1">
+                            <div class="absolute top-0 left-0 w-2 h-full bg-rose-500"></div>
+                            <h3 class="text-rose-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>👩‍🍳</span> Team B</h3>
+                            <div class="text-4xl font-black text-white font-mono">$<span id="tyc-score-1">1000</span></div>
+                        </div>
+
+                        <div class="bg-zinc-800/80 p-4 rounded-xl border border-zinc-600 text-sm text-zinc-300 shadow-inner">
+                            <h4 class="font-bold text-amber-400 mb-2 uppercase tracking-widest border-b border-zinc-700 pb-1">Rules of the Kitchen</h4>
+                            <ul class="list-disc pl-4 space-y-1">
+                                <li>Land on a Property: Answer correctly to earn $200.</li>
+                                <li>Chance Spaces: Draw a mystery card.</li>
+                                <li>Expenses: Pay the bank.</li>
+                                <li>Go bankrupt? You lose!</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right: The Board -->
+                    <div class="lg:col-span-3 relative">
+                        <div class="tycoon-board bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20" id="tycoon-board-grid">
+                            <!-- Spaces injected by JS -->
+                            
+                            <!-- Center Area (Dice & Events) -->
+                            <div class="tycoon-center text-center relative z-0">
+                                <h3 class="text-2xl font-display text-white mb-2 tracking-widest uppercase" id="tyc-turn-indicator">Team A's Turn</h3>
+                                <p class="text-zinc-400 text-sm mb-6 italic" id="tyc-status-text">Ready to trade.</p>
+                                
+                                <div class="bg-amber-100 text-amber-900 w-20 h-20 rounded-2xl flex items-center justify-center text-5xl font-black shadow-[0_8px_0_#b45309] mb-8 border-4 border-white" id="tyc-dice-display">
+                                    🎲
+                                </div>
+
+                                <button onclick="rollTycoonDice()" id="tyc-roll-btn" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white font-bold py-3 px-8 rounded-full text-xl shadow-lg transition-transform transform hover:-translate-y-1 border border-amber-300">
+                                    ROLL DICE
+                                </button>
+                            </div>
+
+                            <!-- Player Tokens -->
+                            <div id="token-0" class="player-token">👨‍🍳</div>
+                            <div id="token-1" class="player-token">👩‍🍳</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Event/Quiz Modal -->
+                <div id="tyc-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+                    <div class="bg-zinc-900 p-8 md:p-12 rounded-3xl border-4 border-amber-500 max-w-2xl w-full text-center relative shadow-2xl">
+                        <div id="tyc-modal-header" class="text-amber-400 font-bold uppercase tracking-[0.2em] mb-4 text-sm bg-black/50 py-2 rounded-lg"></div>
+                        <h3 id="tyc-modal-title" class="text-3xl md:text-4xl font-display text-white mb-6"></h3>
+                        <p id="tyc-modal-desc" class="text-xl text-zinc-300 mb-8 font-serif leading-relaxed"></p>
+                        
+                        <div id="tyc-options-area" class="grid gap-4 mb-6">
+                            <!-- Answer buttons injected here -->
+                        </div>
+                        
+                        <div id="tyc-action-area" class="hidden">
+                            <button onclick="closeTycoonModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl shadow-[0_4px_0_#92400e] w-full max-w-sm mx-auto uppercase tracking-widest">Continue</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
         <!-- ================= RESULTS VIEW ================= -->
         <div id="view-results" class="view text-center">
             <div class="glass gold-border rounded-3xl p-12 max-w-xl mx-auto animate-pop-in">
@@ -768,6 +917,48 @@
             { type: 'p', action: 'gain', amount: 100, title: '🩺 Health Inspector Pass!', desc: 'Perfect cleanliness! Gain 100 points!' }
         ];
 
+        // 8. Gastronomy Tycoon (Monopoly Data)
+        const tycoonSpaces = [
+            { id: 0, name: "START", type: "corner", icon: "🏁", col: 1, row: 1 },
+            { id: 1, name: "Fast Food Diner", type: "prop", color: "#fca5a5", icon: "🍔", col: 2, row: 1 },
+            { id: 2, name: "Mystery Dish", type: "chance", icon: "❓", col: 3, row: 1 },
+            { id: 3, name: "The Bakery", type: "prop", color: "#fca5a5", icon: "🥐", col: 4, row: 1 },
+            { id: 4, name: "HEALTH INSPECTOR", type: "penalty", icon: "🩺", col: 5, row: 1 },
+            { id: 5, name: "Gourmet Seafood", type: "prop", color: "#93c5fd", icon: "🦞", col: 5, row: 2 },
+            { id: 6, name: "Caterer's Kitchen", type: "prop", color: "#93c5fd", icon: "🧑‍🍳", col: 5, row: 3 },
+            { id: 7, name: "Expenses", type: "tax", icon: "💸", col: 5, row: 4 },
+            { id: 8, name: "THE FEAST", type: "bonus", icon: "🍲", col: 5, row: 5 },
+            { id: 9, name: "Local Farms", type: "prop", color: "#86efac", icon: "🚜", col: 4, row: 5 },
+            { id: 10, name: "Mystery Dish", type: "chance", icon: "❓", col: 3, row: 5 },
+            { id: 11, name: "Fresh Crops", type: "prop", color: "#86efac", icon: "🌾", col: 2, row: 5 },
+            { id: 12, name: "DISHWASHING", type: "penalty", icon: "🧼", col: 1, row: 5 },
+            { id: 13, name: "Aperitif Lounge", type: "prop", color: "#fde047", icon: "🍸", col: 1, row: 4 },
+            { id: 14, name: "Expenses", type: "tax", icon: "💸", col: 1, row: 3 },
+            { id: 15, name: "The Grand Diner", type: "prop", color: "#fde047", icon: "🍽️", col: 1, row: 2 }
+        ];
+
+        const tycoonQuiz = [
+            { q: "What does 'Sustenance' mean?", opts: ["Food that provides strength", "A type of dessert", "A cooking tool"], a: 0 },
+            { q: "If food is 'Stale', it is...", opts: ["Fresh out of the oven", "Old, dry, and no longer fresh", "Very spicy"], a: 1 },
+            { q: "What is an 'Aperitif'?", opts: ["A drink taken before a meal to stimulate appetite", "A heavy meat dish", "The final dessert course"], a: 0 },
+            { q: "The word 'Palpable' means...", opts: ["Tasting very good", "A feeling so intense it seems physical", "A type of local fish"], a: 1 },
+            { q: "What does it mean to 'Repatriate' an artifact?", opts: ["To clean it thoroughly", "To send it back to its home country", "To sell it for profit"], a: 1 },
+            { q: "Which word is a synonym for 'Approval'?", opts: ["Justification", "Agreement/Validation", "Consequence"], a: 1 },
+            { q: "What is the definition of 'Cuisine'?", opts: ["A style of cooking characteristic of a particular country", "The chef's uniform", "The bill at the end of a meal"], a: 0 },
+            { q: "If a meal is 'Savoury', it is...", opts: ["Very sweet and sugary", "Salty or spicy, not sweet", "Lacking any flavor"], a: 1 },
+            { q: "What are 'Nutrients'?", opts: ["Substances that provide essential nourishment for growth", "Fake ingredients used in fast food", "The total cost of a meal"], a: 0 },
+            { q: "What does 'Digestion' refer to?", opts: ["Cooking food at high temperatures", "The process of breaking down food in the body", "Throwing away leftovers"], a: 1 }
+        ];
+
+        const tycoonChance = [
+            { title: "Food Critic Review!", desc: "The local critic gave your Cuisine great Approval. Your restaurant is increasingly popular! Collect $200.", change: 200 },
+            { title: "Health Violation!", desc: "The inspector found STALE ingredients and poor Disposal methods in your kitchen. Pay $150 in Expenses.", change: -150 },
+            { title: "Supply Chain Issue!", desc: "The price of Fresh Crops and Seafood has skyrocketed excessively. Pay $100.", change: -100 },
+            { title: "Catering Success!", desc: "Your Caterer successfully managed a massive Feast for a celebrity. You eagerly collect $250!", change: 250 },
+            { title: "Malnutrition Scandal", desc: "A rival Fast Food Diner was shut down. You gain their hungry customers seeking real Sustenance. Collect $150.", change: 150 },
+            { title: "Broken Equipment", desc: "The main oven's Texture and temperature controls are broken. It's a palpable disaster. Pay $200.", change: -200 }
+        ];
+
         // ==========================================
         // GLOBAL STATE & UTILS
         // ==========================================
@@ -799,9 +990,11 @@
             if (type === 'sentence') initSentenceGame();
             if (type === 'jeopardy') initJeopardy();
             if (type === 'restoration') initRestoration();
+            if (type === 'vaultcracker') initVaultCracker();
             if (type === 'defuse') initDefuse();
-            if (type === 'millionaire') initMillionaire();
+            if (type === 'roleplay') initRoleplay();
             if (type === 'baamboozle') initBaamboozle();
+            if (type === 'tycoon') initTycoon();
         }
 
         function endGame(message) {
@@ -1582,6 +1775,260 @@
                 score = Math.max(bbzScoreA, bbzScoreB);
                 setTimeout(()=>endGame(`Service Ended! Team A: ${bbzScoreA} | Team B: ${bbzScoreB}`), 1000);
             }
+        }
+
+        // ==========================================
+        // GAME 9: GASTRONOMY TYCOON
+        // ==========================================
+        let tycPlayers = [
+            { pos: 0, money: 1000, tokenObj: null },
+            { pos: 0, money: 1000, tokenObj: null }
+        ];
+        let tycTurn = 0; // 0 for A, 1 for B
+        let tycDeckQ = [];
+        let tycDeckC = [];
+
+        function initTycoon() {
+            tycPlayers = [{ pos: 0, money: 1000, tokenObj: document.getElementById('token-0') }, { pos: 0, money: 1000, tokenObj: document.getElementById('token-1') }];
+            tycTurn = 0;
+            tycDeckQ = shuffleArray([...tycoonQuiz]);
+            tycDeckC = shuffleArray([...tycoonChance]);
+            
+            updateTycoonUI();
+            
+            // Generate Board
+            const grid = document.getElementById('tycoon-board-grid');
+            // Remove old spaces if re-init
+            Array.from(grid.children).forEach(child => {
+                if(child.classList.contains('tycoon-space')) child.remove();
+            });
+
+            tycoonSpaces.forEach(sp => {
+                const div = document.createElement('div');
+                div.className = 'tycoon-space';
+                div.id = `tyc-space-${sp.id}`;
+                div.style.gridColumn = sp.col;
+                div.style.gridRow = sp.row;
+                
+                if (sp.type === 'corner' || sp.type === 'bonus') div.classList.add('tycoon-corner');
+                else if (sp.type === 'penalty' || sp.type === 'tax') {
+                    div.classList.add('bg-zinc-800', 'text-white');
+                    div.style.borderColor = '#52525b';
+                }
+                
+                let headerColor = sp.color ? `background-color: ${sp.color};` : '';
+                let headerHTML = sp.type === 'prop' ? `<div class="w-full h-3 rounded-t-sm mb-1 absolute top-0 left-0" style="${headerColor}"></div>` : '';
+
+                div.innerHTML = `
+                    ${headerHTML}
+                    <div class="text-2xl mt-1 z-10">${sp.icon}</div>
+                    <div class="text-[10px] font-bold uppercase leading-tight mt-1 z-10 text-gray-800 ${sp.type==='penalty'||sp.type==='tax' ? 'text-white' : ''}">${sp.name}</div>
+                `;
+                grid.appendChild(div);
+            });
+
+            showView('tycoon');
+            
+            // Initial token placement
+            setTimeout(() => {
+                moveTokenVisually(0, 0);
+                moveTokenVisually(1, 0);
+            }, 100);
+        }
+
+        function updateTycoonUI() {
+            document.getElementById('tyc-score-0').textContent = tycPlayers[0].money;
+            document.getElementById('tyc-score-1').textContent = tycPlayers[1].money;
+            
+            const p0 = document.getElementById('tyc-panel-0');
+            const p1 = document.getElementById('tyc-panel-1');
+            
+            if (tycTurn === 0) {
+                p0.classList.remove('opacity-50', 'scale-95'); p0.classList.add('scale-105', 'ring-2', 'ring-blue-400');
+                p1.classList.add('opacity-50', 'scale-95'); p1.classList.remove('scale-105', 'ring-2', 'ring-rose-400');
+                document.getElementById('tyc-turn-indicator').textContent = "Team A's Turn";
+                document.getElementById('tyc-turn-indicator').className = "text-2xl font-display text-blue-400 mb-2 tracking-widest uppercase";
+            } else {
+                p1.classList.remove('opacity-50', 'scale-95'); p1.classList.add('scale-105', 'ring-2', 'ring-rose-400');
+                p0.classList.add('opacity-50', 'scale-95'); p0.classList.remove('scale-105', 'ring-2', 'ring-blue-400');
+                document.getElementById('tyc-turn-indicator').textContent = "Team B's Turn";
+                document.getElementById('tyc-turn-indicator').className = "text-2xl font-display text-rose-400 mb-2 tracking-widest uppercase";
+            }
+        }
+
+        function rollTycoonDice() {
+            const btn = document.getElementById('tyc-roll-btn');
+            const display = document.getElementById('tyc-dice-display');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            
+            display.classList.add('dice-roll-anim');
+            
+            let roll = 0;
+            let shuffleInt = setInterval(() => {
+                display.textContent = Math.floor(Math.random() * 6) + 1;
+            }, 50);
+
+            setTimeout(() => {
+                clearInterval(shuffleInt);
+                display.classList.remove('dice-roll-anim');
+                roll = Math.floor(Math.random() * 4) + 1; // 1 to 4 for faster board traversal
+                display.textContent = roll;
+                document.getElementById('tyc-status-text').textContent = `Rolled a ${roll}! moving...`;
+                
+                processMove(roll);
+            }, 600);
+        }
+
+        function moveTokenVisually(playerIdx, spaceId) {
+            const spaceEl = document.getElementById(`tyc-space-${spaceId}`);
+            const tokenEl = tycPlayers[playerIdx].tokenObj;
+            if(!spaceEl || !tokenEl) return;
+
+            const rect = spaceEl.getBoundingClientRect();
+            const boardRect = document.getElementById('tycoon-board-grid').getBoundingClientRect();
+            
+            let x = rect.left - boardRect.left + (rect.width / 2) - 15;
+            let y = rect.top - boardRect.top + (rect.height / 2) - 15;
+            
+            // Offset tokens slightly so they don't overlap perfectly
+            if (playerIdx === 0) { x -= 10; y -= 10; }
+            else { x += 10; y += 10; }
+
+            tokenEl.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function processMove(roll) {
+            let p = tycPlayers[tycTurn];
+            let targetPos = (p.pos + roll) % 16;
+            
+            // Pass Go logic
+            if (p.pos + roll >= 16) {
+                p.money += 200;
+                document.getElementById('tyc-status-text').textContent = `Passed START! Collected $200.`;
+                updateTycoonUI();
+            }
+
+            p.pos = targetPos;
+            moveTokenVisually(tycTurn, targetPos);
+
+            setTimeout(() => {
+                resolveTycoonSpace(targetPos);
+            }, 600);
+        }
+
+        function resolveTycoonSpace(spaceId) {
+            const space = tycoonSpaces[spaceId];
+            
+            if (space.type === 'prop') {
+                showTycoonQuizModal(space);
+            } else if (space.type === 'chance') {
+                showTycoonChanceModal();
+            } else if (space.type === 'tax') {
+                showTycoonNotice("Expenses Due", "You must pay for high-quality ingredients and staff wages. Lose $100.", -100);
+            } else if (space.type === 'penalty') {
+                showTycoonNotice("Health Code Violation!", "The inspector found issues in your kitchen. Pay a $150 fine.", -150);
+            } else if (space.type === 'bonus') {
+                showTycoonNotice("The Grand Feast!", "You hosted a massive banquet. Collect a $200 bonus!", 200);
+            } else if (space.type === 'corner' && spaceId === 0) {
+                // Landed exactly on start
+                showTycoonNotice("Start of Shift", "You landed exactly on START. Collect an extra $100 bonus!", 100);
+            }
+        }
+
+        function showTycoonQuizModal(space) {
+            if (tycDeckQ.length === 0) tycDeckQ = shuffleArray([...tycoonQuiz]);
+            const q = tycDeckQ.pop();
+            
+            document.getElementById('tyc-modal-header').textContent = `Property Action: ${space.name}`;
+            document.getElementById('tyc-modal-title').textContent = "Trivia Challenge";
+            document.getElementById('tyc-modal-desc').textContent = q.q;
+            
+            const optArea = document.getElementById('tyc-options-area');
+            optArea.innerHTML = '';
+            optArea.classList.remove('hidden');
+            document.getElementById('tyc-action-area').classList.add('hidden');
+            
+            q.opts.forEach((optText, index) => {
+                const btn = document.createElement('button');
+                btn.className = "bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 px-6 rounded-xl border border-slate-600 transition text-lg shadow-md";
+                btn.textContent = optText;
+                btn.onclick = () => handleTycoonQuizAnswer(index === q.a, btn, optArea);
+                optArea.appendChild(btn);
+            });
+            
+            document.getElementById('tyc-modal').classList.remove('hidden');
+        }
+
+        function handleTycoonQuizAnswer(isCorrect, btnElement, container) {
+            Array.from(container.children).forEach(b => b.disabled = true);
+            
+            if(isCorrect) {
+                btnElement.classList.replace('bg-slate-800', 'bg-emerald-600');
+                btnElement.classList.replace('border-slate-600', 'border-emerald-400');
+                tycPlayers[tycTurn].money += 200;
+                document.getElementById('tyc-modal-title').textContent = "Success!";
+                document.getElementById('tyc-modal-desc').textContent = "You successfully managed the property and earned $200!";
+            } else {
+                btnElement.classList.replace('bg-slate-800', 'bg-red-600');
+                btnElement.classList.add('animate-shake');
+                tycPlayers[tycTurn].money -= 50;
+                document.getElementById('tyc-modal-title').textContent = "Mistake!";
+                document.getElementById('tyc-modal-desc').textContent = "Incorrect culinary knowledge. You lost $50 in wasted ingredients.";
+            }
+            
+            updateTycoonUI();
+            checkBankruptcy();
+            
+            setTimeout(() => {
+                container.classList.add('hidden');
+                document.getElementById('tyc-action-area').classList.remove('hidden');
+            }, 1000);
+        }
+
+        function showTycoonChanceModal() {
+            if (tycDeckC.length === 0) tycDeckC = shuffleArray([...tycoonChance]);
+            const card = tycDeckC.pop();
+            
+            showTycoonNotice(card.title, card.desc, card.change);
+        }
+
+        function showTycoonNotice(title, desc, moneyChange) {
+            document.getElementById('tyc-modal-header').textContent = "Event Update";
+            document.getElementById('tyc-modal-title').textContent = title;
+            document.getElementById('tyc-modal-desc').textContent = desc;
+            
+            document.getElementById('tyc-options-area').classList.add('hidden');
+            document.getElementById('tyc-action-area').classList.remove('hidden');
+            
+            tycPlayers[tycTurn].money += moneyChange;
+            updateTycoonUI();
+            checkBankruptcy();
+            
+            document.getElementById('tyc-modal').classList.remove('hidden');
+        }
+
+        function checkBankruptcy() {
+            if (tycPlayers[0].money < 0) {
+                score = tycPlayers[1].money;
+                setTimeout(() => endGame("Bankrupt! Team B Wins!"), 1500);
+            } else if (tycPlayers[1].money < 0) {
+                score = tycPlayers[0].money;
+                setTimeout(() => endGame("Bankrupt! Team A Wins!"), 1500);
+            }
+        }
+
+        function closeTycoonModal() {
+            document.getElementById('tyc-modal').classList.add('hidden');
+            
+            // End turn sequence
+            tycTurn = tycTurn === 0 ? 1 : 0;
+            updateTycoonUI();
+            
+            const btn = document.getElementById('tyc-roll-btn');
+            btn.disabled = false;
+            btn.classList.remove('opacity-50');
+            document.getElementById('tyc-status-text').textContent = "Ready to roll.";
         }
 
     </script>
