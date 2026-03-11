@@ -3,23 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Culinary Arcade: Gastronomy Edition</title>
+    <title>The Publisher's Labyrinth: Literary Arcade</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Lato:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --chef-dark: #27272a;      /* Zinc 800 */
-            --wine-red: #7f1d1d;       /* Red 900 */
-            --cream-bg: #fffbeb;       /* Amber 50 */
-            --gold-accent: #d97706;    /* Amber 600 */
-            --gold-light: #fcd34d;     /* Amber 300 */
+            --lib-dark: #1e1b4b;       /* Indigo 950 */
+            --lib-parchment: #fef3c7;  /* Amber 50 */
+            --lib-gold: #d97706;       /* Amber 600 */
+            --lib-gold-light: #fcd34d; /* Amber 300 */
+            --lib-crimson: #9f1239;    /* Rose 800 */
         }
         
         body {
-            font-family: 'Lato', sans-serif;
-            background-color: var(--chef-dark);
-            background-image: radial-gradient(circle at top right, #3f3f46 0%, #18181b 100%);
-            color: var(--cream-bg);
+            font-family: 'Source Sans 3', sans-serif;
+            background-color: var(--lib-dark);
+            background-image: radial-gradient(circle at top left, #312e81 0%, #1e1b4b 100%);
+            color: var(--lib-parchment);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -82,12 +84,12 @@
         .letter-tile {
             width: 3.5rem; height: 3.5rem;
             display: flex; align-items: center; justify-content: center;
-            font-size: 1.8rem; font-family: 'Playfair Display', serif; font-weight: 800;
+            font-size: 1.8rem; font-family: 'Playfair Display', serif; font-weight: 900;
             border-radius: 0.5rem; user-select: none; text-transform: uppercase;
         }
         .letter-tile.empty { background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); }
         .letter-tile.filled { 
-            background: linear-gradient(to bottom right, var(--gold-light), var(--gold-accent)); 
+            background: linear-gradient(to bottom right, var(--lib-gold-light), var(--lib-gold)); 
             color: #000; border: 2px solid #fff; box-shadow: 0 4px 0 #92400e; 
         }
 
@@ -99,16 +101,16 @@
 
         /* Timer Bar */
         .timer-bar-container { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 5px; overflow: hidden; margin-bottom: 1.5rem; }
-        .timer-bar { height: 100%; background: var(--gold-accent); transition: width 1s linear, background-color 0.3s; }
-        .timer-warning { background: #ef4444; }
-        .timer-danger { background: #b91c1c; }
+        .timer-bar { height: 100%; background: var(--lib-gold); transition: width 1s linear, background-color 0.3s; }
+        .timer-warning { background: #f43f5e; }
+        .timer-danger { background: #e11d48; }
 
         .view { display: none; }
         .view.active { display: block; }
 
         /* Millionaire specific */
-        .ladder-step.active { background-color: var(--gold-accent); color: white; font-weight: bold; border-radius: 6px; border: 1px solid white; }
-        .ladder-step.passed { color: var(--gold-light); opacity: 0.7; }
+        .ladder-step.active { background-color: var(--lib-gold); color: white; font-weight: bold; border-radius: 6px; border: 1px solid white; }
+        .ladder-step.passed { color: var(--lib-gold-light); opacity: 0.7; }
         
         /* Tycoon Board Specifics */
         .tycoon-board {
@@ -122,9 +124,9 @@
             margin: 0 auto;
         }
         .tycoon-space {
-            background: rgba(255,255,255,0.9);
+            background: rgba(254, 243, 199, 0.95);
             border-radius: 8px;
-            border: 2px solid #b8976b;
+            border: 2px solid #b45309;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -133,6 +135,7 @@
             padding: 4px;
             position: relative;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
         .tycoon-corner {
             background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
@@ -142,9 +145,9 @@
         .tycoon-center {
             grid-column: 2 / 5;
             grid-row: 2 / 5;
-            background: rgba(39, 39, 42, 0.9);
+            background: rgba(30, 27, 75, 0.9);
             border-radius: 16px;
-            border: 2px dashed #b8976b;
+            border: 2px dashed #d97706;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -159,9 +162,7 @@
             z-index: 20;
             filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
         }
-        .dice-roll-anim {
-            animation: diceSpin 0.5s ease-in-out;
-        }
+        .dice-roll-anim { animation: diceSpin 0.5s ease-in-out; }
         @keyframes diceSpin {
             0% { transform: rotate(0deg) scale(1); }
             50% { transform: rotate(180deg) scale(1.5); }
@@ -172,123 +173,123 @@
 <body class="p-4 md:p-8 flex flex-col items-center justify-center">
 
     <!-- Ambient Background Effects -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-5" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
+    <div class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.png');"></div>
 
     <div class="w-full max-w-7xl relative z-10">
         
         <!-- ================= DASHBOARD ================= -->
         <div id="view-dashboard" class="view active animate-pop-in">
             <div class="text-center mb-12">
-                <span class="border border-amber-500/50 text-amber-400 text-xs font-bold px-5 py-1.5 rounded-full uppercase tracking-widest shadow-lg bg-amber-500/10">Gastronomy & Agriculture</span>
-                <h1 class="text-5xl md:text-7xl mt-6 mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 font-display drop-shadow-md">The Culinary Arcade</h1>
-                <p class="text-xl text-zinc-400 font-light">Master the vocabulary of the kitchen, the farm, and the dining room.</p>
+                <span class="border border-amber-500/50 text-amber-400 text-xs font-bold px-5 py-1.5 rounded-full uppercase tracking-widest shadow-lg bg-amber-500/10">Literature & Analysis</span>
+                <h1 class="text-5xl md:text-7xl mt-6 mb-4 text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 font-display drop-shadow-md">The Publisher's Labyrinth</h1>
+                <p class="text-xl text-indigo-200 font-light">Master the vocabulary of manuscripts, myths, and storytelling.</p>
             </div>
 
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Game 1 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('speedrun')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🧾</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Order Rush</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Speed run! Match the definition to the correct food or dining term.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">📜</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Manuscript Rush</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Speed run! Match the definition to the correct literary or analytical term.</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Take Orders</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Start Reading</button>
                 </div>
 
                 <!-- Game 2 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('scrambler')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🥘</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Recipe Scrambler</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Hangman style. Guess the target vocabulary word letter by letter to save the dish.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">⌨️</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">The Cryptogram</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Hangman style. Guess the target vocabulary word letter by letter to finish the draft.</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Start Cooking</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Start Typing</button>
                 </div>
 
                 <!-- Game 3 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('restoration')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🧩</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Pantry Match</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Memory match! Pair the related vocabulary words (Associations & Synonyms).</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">📖</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Binding Match</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Memory match! Pair the related vocabulary words (Associations & Synonyms).</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Open Pantry</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Open Book</button>
                 </div>
                 
                 <!-- Game 4 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('defuse')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">♨️</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Pressure Cooker</h2>
-                        <p class="text-zinc-300 text-sm mb-6">High-pressure context! Cut the correct wire by choosing the word that fits the sentence.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">⏰</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Deadline Defuse</h2>
+                        <p class="text-indigo-100 text-sm mb-6">High-pressure context! Cut the correct wire by choosing the word that fits the sentence.</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Release Steam</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Meet Deadline</button>
                 </div>
 
                 <!-- Game 5 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('sentence')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🍽️</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Menu Maker</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Team vs Team. Create a meaningful sentence connecting two target vocabulary words.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">🖋️</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Plot Clash</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Team vs Team. Create a meaningful sentence connecting exactly two target words.</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Draft Menu</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Draft Plot</button>
                 </div>
 
                 <!-- Game 6 -->
                 <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('jeopardy')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🍷</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Culinary Jeopardy</h2>
-                        <p class="text-zinc-300 text-sm mb-6">The ultimate quiz show review covering Food Types, The Body, Kitchen, and Nutrition.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">🏛️</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Literary Jeopardy</h2>
+                        <p class="text-indigo-100 text-sm mb-6">The ultimate quiz show review covering Literature, Genres, Verbs, and Adjectives.</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Host Game</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Host Seminar</button>
                 </div>
 
                 <!-- Game 7 -->
-                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer lg:col-span-2" onclick="startGame('millionaire')">
+                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer lg:col-span-3" onclick="startGame('millionaire')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">👨‍🍳</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Master Chef Trivia</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Climb the ladder to a Michelin Star by answering multiple-choice vocabulary questions!</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">🌟</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Bestseller Trivia</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Climb the ladder to becoming a #1 Bestselling Author by answering high-pressure multiple-choice questions!</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Enter Kitchen</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Publish Book</button>
                 </div>
 
                 <!-- Game 8 -->
-                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('baamboozle')">
+                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer lg:col-span-1" onclick="startGame('baamboozle')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🍕</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Kitchen Chaos</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Pick tiles to answer questions, steal points, or trigger chaotic kitchen disasters!</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">🌪️</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Writer's Block</h2>
+                        <p class="text-indigo-100 text-sm mb-6">Baamboozle style! Pick tiles to answer questions or trigger chaotic plot twists!</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Start Service</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Break Block</button>
                 </div>
 
-                <!-- Game 9 (NEW: Gastronomy Tycoon) -->
-                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer" onclick="startGame('tycoon')">
+                <!-- Game 9 -->
+                <div class="glass gold-border rounded-xl p-8 text-center flex flex-col justify-between game-btn cursor-pointer lg:col-span-2" onclick="startGame('tycoon')">
                     <div>
-                        <div class="text-5xl mb-4 drop-shadow-md">🎲</div>
-                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Gastronomy Tycoon</h2>
-                        <p class="text-zinc-300 text-sm mb-6">Monopoly style! Roll the dice, land on restaurant spaces, and earn Culinary Coins.</p>
+                        <div class="text-5xl mb-4 drop-shadow-md">🏢</div>
+                        <h2 class="text-2xl text-amber-400 mb-2 font-display italic">Publishing Tycoon</h2>
+                        <p class="text-indigo-100 text-sm mb-6">True Monopoly! Land on offices, answer questions to claim them, and charge the other team royalties!</p>
                     </div>
-                    <button class="w-full bg-zinc-800 hover:bg-zinc-700 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Roll the Dice</button>
+                    <button class="w-full bg-indigo-950 hover:bg-indigo-900 text-amber-400 border border-amber-500/30 font-bold py-3 rounded text-lg transition-all tracking-wider font-display">Roll the Dice</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VIEW 1: ORDER RUSH (Speed Run) ================= -->
+        <!-- ================= VIEW 1: MANUSCRIPT RUSH (Speed Run) ================= -->
         <div id="view-speedrun" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-3xl font-display text-amber-400" id="sr-score">Tips: $0</div>
+                    <div class="text-3xl font-display text-amber-400" id="sr-score">Sales: 0</div>
                 </div>
                 <div class="timer-bar-container"><div id="sr-timer-bar" class="timer-bar" style="width: 100%;"></div></div>
-                <div class="text-center text-sm font-bold text-zinc-400 mb-8 tracking-widest uppercase font-display">Seconds Remaining: <span id="sr-time-text" class="text-white text-lg">60</span></div>
+                <div class="text-center text-sm font-bold text-indigo-300 mb-8 tracking-widest uppercase font-display">Seconds Remaining: <span id="sr-time-text" class="text-white text-lg">60</span></div>
                 <div id="sr-play-area" class="animate-pop-in">
                     <div class="bg-black/40 border border-amber-500/20 p-8 rounded-xl mb-8 text-center shadow-inner min-h-[180px] flex flex-col justify-center relative">
-                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-600 text-black text-[10px] font-bold uppercase tracking-[0.2em] py-1 px-4 rounded-sm">Order Ticket</div>
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-600 text-black text-[10px] font-bold uppercase tracking-[0.2em] py-1 px-4 rounded-sm">Definition File</div>
                         <h3 id="sr-definition" class="text-2xl md:text-4xl font-medium text-white leading-tight font-display italic"></h3>
                     </div>
                     <div id="sr-options" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -296,26 +297,26 @@
             </div>
         </div>
 
-        <!-- ================= VIEW 2: RECIPE SCRAMBLER (Hangman) ================= -->
+        <!-- ================= VIEW 2: THE CRYPTOGRAM (Hangman) ================= -->
         <div id="view-scrambler" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
                     <div class="flex items-center gap-6">
                         <div class="text-2xl font-display text-amber-400" id="sc-score">Score: 0</div>
-                        <div class="text-xl font-display text-zinc-400" id="sc-progress">Dish 1 of 5</div>
+                        <div class="text-xl font-display text-indigo-300" id="sc-progress">Draft 1 of 5</div>
                     </div>
                 </div>
                 
                 <div id="sc-play-area" class="animate-pop-in text-center flex flex-col items-center">
                     <div class="bg-black/40 border border-amber-500/20 p-8 rounded-xl w-full mb-8 shadow-inner relative mt-4 min-h-[120px] flex flex-col justify-center">
-                        <span class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-600 text-black text-[10px] font-bold uppercase tracking-[0.2em] py-1 px-4 rounded-sm">Chef's Clue</span>
+                        <span class="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-amber-600 text-black text-[10px] font-bold uppercase tracking-[0.2em] py-1 px-4 rounded-sm">Editor's Clue</span>
                         <h3 id="sc-definition" class="text-xl md:text-3xl font-medium text-white leading-tight font-display italic mt-2"></h3>
                     </div>
 
                     <div class="mb-6 flex flex-col items-center">
-                        <p class="text-xs text-zinc-400 uppercase tracking-widest mb-2 font-bold">Attempts Remaining</p>
-                        <div class="flex gap-2" id="sc-lives-display"></div>
+                        <p class="text-xs text-indigo-300 uppercase tracking-widest mb-2 font-bold">Ink Ribbons Remaining</p>
+                        <div class="flex gap-2 text-2xl" id="sc-lives-display"></div>
                     </div>
 
                     <div class="mb-8 w-full"><div id="sc-target-slots" class="flex flex-wrap justify-center gap-3 min-h-[4rem]"></div></div>
@@ -323,14 +324,14 @@
                     <div class="w-full max-w-3xl bg-black/30 p-4 md:p-6 rounded-2xl border border-amber-500/10 mb-6"><div id="sc-letters-pool" class="flex flex-wrap justify-center content-start gap-1"></div></div>
                     
                     <div class="flex gap-4 w-full justify-center">
-                        <button onclick="scramblerHint()" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-3 px-8 rounded-lg transition text-sm border border-zinc-500 uppercase tracking-wider">💡 Hint (-1 Attempt)</button>
-                        <button onclick="scramblerReveal()" class="bg-red-900 hover:bg-red-800 text-white font-bold py-3 px-8 rounded-lg transition text-sm border border-red-700 uppercase tracking-wider">👁️ Reveal Word</button>
+                        <button onclick="scramblerHint()" class="bg-indigo-700 hover:bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg transition text-sm border border-indigo-500 uppercase tracking-wider">💡 Hint (-1 Ink)</button>
+                        <button onclick="scramblerReveal()" class="bg-rose-900 hover:bg-rose-800 text-white font-bold py-3 px-8 rounded-lg transition text-sm border border-rose-700 uppercase tracking-wider">👁️ Reveal Word</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VIEW 3: PANTRY MATCH (Memory Match) ================= -->
+        <!-- ================= VIEW 3: BINDING MATCH (Memory Match) ================= -->
         <div id="view-restoration" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-5xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
@@ -338,23 +339,22 @@
                     <div class="text-3xl font-display text-amber-400" id="res-score">Matches: 0 / 8</div>
                 </div>
 
-                <!-- Adjustable Timer for Memory Match -->
                 <div class="bg-black/30 rounded-xl p-4 mb-8 text-center max-w-md mx-auto shadow-inner border border-amber-500/20">
                     <div class="text-5xl font-display text-white mb-2 tracking-widest" id="res-timer-display">01:00</div>
                     <div class="flex justify-center items-center gap-3 mb-4">
                         <button onclick="adjustResTimer(-10)" class="text-amber-500 font-bold hover:text-amber-300 transition px-2">-10s</button>
-                        <span class="text-zinc-400 text-xs uppercase tracking-widest font-bold">Adjust Time</span>
+                        <span class="text-indigo-300 text-xs uppercase tracking-widest font-bold">Adjust Time</span>
                         <button onclick="adjustResTimer(10)" class="text-amber-500 font-bold hover:text-amber-300 transition px-2">+10s</button>
                     </div>
                     <div class="flex justify-center gap-3">
                         <button onclick="startResTimer()" class="bg-amber-600 hover:bg-amber-500 px-8 py-2 rounded text-white font-bold transition">Start</button>
-                        <button onclick="pauseResTimer()" class="bg-zinc-600 hover:bg-zinc-500 px-8 py-2 rounded text-white font-bold transition">Pause</button>
-                        <button onclick="resetResTimer()" class="bg-red-800 hover:bg-red-700 px-8 py-2 rounded text-white font-bold transition">Reset</button>
+                        <button onclick="pauseResTimer()" class="bg-indigo-600 hover:bg-indigo-500 px-8 py-2 rounded text-white font-bold transition">Pause</button>
+                        <button onclick="resetResTimer()" class="bg-rose-800 hover:bg-rose-700 px-8 py-2 rounded text-white font-bold transition">Reset</button>
                     </div>
                 </div>
 
                 <div class="text-center mb-6">
-                    <p class="text-zinc-300 text-sm italic">Press Start to unlock the pantry and match the related words!</p>
+                    <p class="text-indigo-200 text-sm italic">Press Start to open the library and match the related words!</p>
                 </div>
                 <div id="res-grid" class="grid grid-cols-4 md:grid-cols-4 gap-3 md:gap-4 max-w-4xl mx-auto opacity-50 pointer-events-none transition-opacity duration-300">
                     <!-- Cards injected by JS -->
@@ -362,28 +362,28 @@
             </div>
         </div>
 
-        <!-- ================= VIEW 4: PRESSURE COOKER (Bomb Game) ================= -->
+        <!-- ================= VIEW 4: DEADLINE DEFUSE (Bomb Game) ================= -->
         <div id="view-defuse" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-3xl mx-auto text-center">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-2xl font-display text-red-500" id="bomb-stage">Ticket 1 of 5</div>
+                    <div class="text-2xl font-display text-rose-500" id="bomb-stage">Deadline 1 of 5</div>
                 </div>
 
-                <div id="bomb-container" class="relative bg-zinc-800 border-4 border-zinc-600 p-8 rounded-3xl shadow-2xl mb-8 max-w-lg mx-auto">
-                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-zinc-500 rounded-t-lg border-2 border-b-0 border-zinc-400 flex items-center justify-center">
-                        <div class="w-10 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                <div id="bomb-container" class="relative bg-slate-900 border-4 border-slate-700 p-8 rounded-3xl shadow-2xl mb-8 max-w-lg mx-auto">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-slate-600 rounded-t-lg border-2 border-b-0 border-slate-500 flex items-center justify-center">
+                        <div class="w-10 h-2 bg-rose-500 rounded-full animate-pulse"></div>
                     </div>
                     
-                    <div class="bg-black border-4 border-zinc-700 p-4 rounded-xl mb-6 flex justify-center items-center shadow-inner">
-                        <span id="bomb-timer" class="text-6xl font-mono font-bold text-red-500 tracking-widest animate-pulse-fast drop-shadow-[0_0_10px_rgba(239,68,68,0.8)]">60.0</span>
+                    <div class="bg-black border-4 border-slate-800 p-4 rounded-xl mb-6 flex justify-center items-center shadow-inner">
+                        <span id="bomb-timer" class="text-6xl font-mono font-bold text-rose-500 tracking-widest animate-pulse-fast drop-shadow-[0_0_10px_rgba(225,29,72,0.8)]">60.0</span>
                     </div>
 
                     <div class="bg-black/40 p-6 rounded-xl border border-amber-500/30 mb-8 min-h-[140px] flex items-center justify-center shadow-inner">
                         <p id="bomb-question" class="text-xl md:text-2xl font-medium text-white leading-relaxed font-display italic"></p>
                     </div>
 
-                    <p class="text-zinc-400 text-xs font-bold uppercase tracking-widest mb-4">Select the correct ingredient to save the dish:</p>
+                    <p class="text-indigo-300 text-xs font-bold uppercase tracking-widest mb-4">Select the correct word to finish the text:</p>
                     <div id="bomb-wires" class="flex flex-col gap-4">
                         <!-- Wires injected by JS -->
                     </div>
@@ -391,30 +391,30 @@
             </div>
         </div>
 
-        <!-- ================= VIEW 5: MENU MAKER (Sentence Clash) ================= -->
+        <!-- ================= VIEW 5: PLOT CLASH (Sentence Clash) ================= -->
         <div id="view-sentence" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-5xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-2xl font-display text-zinc-300">Menu Maker Clash</div>
+                    <div class="text-2xl font-display text-indigo-300">Plot Clash</div>
                 </div>
                 
                 <div class="grid grid-cols-2 gap-4 md:gap-8 mb-10">
-                    <div class="bg-zinc-900/80 border border-zinc-600 rounded-xl p-4 text-center shadow-lg relative overflow-hidden">
+                    <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center shadow-lg relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-2 bg-blue-500"></div>
                         <h3 class="text-blue-400 font-display text-2xl mb-1 mt-2">TEAM A</h3>
                         <div class="text-6xl font-black text-white mb-4 font-display" id="team1-score">0</div>
                         <div class="flex justify-center gap-2">
-                            <button onclick="updateTeamScore(1, -5)" class="bg-zinc-800 text-white w-12 h-12 rounded border border-zinc-600 hover:bg-zinc-700 transition font-bold text-xl">-</button>
+                            <button onclick="updateTeamScore(1, -5)" class="bg-slate-800 text-white w-12 h-12 rounded border border-slate-600 hover:bg-slate-700 transition font-bold text-xl">-</button>
                             <button onclick="updateTeamScore(1, 10)" class="bg-blue-700 text-white w-12 h-12 rounded border border-blue-500 hover:bg-blue-600 transition font-bold text-xl">+</button>
                         </div>
                     </div>
-                    <div class="bg-zinc-900/80 border border-zinc-600 rounded-xl p-4 text-center shadow-lg relative overflow-hidden">
+                    <div class="bg-slate-900/80 border border-slate-700 rounded-xl p-4 text-center shadow-lg relative overflow-hidden">
                         <div class="absolute top-0 left-0 w-full h-2 bg-rose-500"></div>
                         <h3 class="text-rose-400 font-display text-2xl mb-1 mt-2">TEAM B</h3>
                         <div class="text-6xl font-black text-white mb-4 font-display" id="team2-score">0</div>
                         <div class="flex justify-center gap-2">
-                            <button onclick="updateTeamScore(2, -5)" class="bg-zinc-800 text-white w-12 h-12 rounded border border-zinc-600 hover:bg-zinc-700 transition font-bold text-xl">-</button>
+                            <button onclick="updateTeamScore(2, -5)" class="bg-slate-800 text-white w-12 h-12 rounded border border-slate-600 hover:bg-slate-700 transition font-bold text-xl">-</button>
                             <button onclick="updateTeamScore(2, 10)" class="bg-rose-700 text-white w-12 h-12 rounded border border-rose-500 hover:bg-rose-600 transition font-bold text-xl">+</button>
                         </div>
                     </div>
@@ -424,83 +424,75 @@
                     <div class="text-6xl font-display text-white mb-4 tracking-widest" id="sn-timer-display">01:00</div>
                     <div class="flex justify-center items-center gap-4 mb-6">
                         <button onclick="adjustSnTimer(-10)" class="text-amber-500 hover:text-amber-300 text-lg font-bold px-2">-10s</button>
-                        <span class="text-zinc-500 text-xs uppercase tracking-widest font-bold">Adjust Time</span>
+                        <span class="text-indigo-400 text-xs uppercase tracking-widest font-bold">Adjust Time</span>
                         <button onclick="adjustSnTimer(10)" class="text-amber-500 hover:text-amber-300 text-lg font-bold px-2">+10s</button>
                     </div>
                     <div class="flex justify-center gap-3">
                         <button onclick="startSnTimer()" class="bg-emerald-700 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded uppercase tracking-wider transition">Start</button>
                         <button onclick="pauseSnTimer()" class="bg-amber-700 hover:bg-amber-600 text-white font-bold py-3 px-8 rounded uppercase tracking-wider transition">Pause</button>
-                        <button onclick="resetSnTimer()" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-3 px-8 rounded uppercase tracking-wider transition">Reset</button>
+                        <button onclick="resetSnTimer()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded uppercase tracking-wider transition">Reset</button>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <p class="text-zinc-400 font-bold uppercase tracking-widest text-sm mb-6">Create a logical sentence connecting these exactly 2 words:</p>
+                    <p class="text-indigo-300 font-bold uppercase tracking-widest text-sm mb-6">Create a logical sentence connecting these exactly 2 words:</p>
                     <div id="sn-words-container" class="flex flex-col md:flex-row flex-wrap justify-center gap-6 mb-8 items-center min-h-[5rem]"></div>
                     
-                    <!-- Reveal Button & Meaningful Example -->
                     <div class="mb-10 max-w-3xl mx-auto">
                         <button onclick="toggleSentenceExample()" class="text-sm font-bold text-amber-500 hover:text-white border border-amber-500/50 px-4 py-2 rounded-full transition mb-4">Teacher: Reveal Example Sentence</button>
                         <div id="sn-example-box" class="hidden bg-amber-900/40 border border-amber-500/50 p-6 rounded-xl shadow-inner">
-                            <p class="text-amber-300 font-bold text-xs uppercase tracking-widest mb-3">Meaningful Context Example:</p>
+                            <p class="text-amber-300 font-bold text-xs uppercase tracking-widest mb-3">Meaningful Literary Context:</p>
                             <p id="sn-example-text" class="text-white text-2xl font-display italic"></p>
                         </div>
                     </div>
 
-                    <button onclick="nextSentenceWords()" class="bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white font-display font-bold text-2xl py-5 px-12 rounded-full shadow-lg transition-all border border-amber-400/50">Draw Target Words 🎲</button>
+                    <button onclick="nextSentenceWords()" class="bg-gradient-to-r from-amber-600 to-amber-800 hover:from-amber-500 hover:to-amber-700 text-white font-display font-bold text-2xl py-5 px-12 rounded-full shadow-lg transition-all border border-amber-400/50">Draw Target Words 🎲</button>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VIEW 6: CULINARY JEOPARDY ================= -->
+        <!-- ================= VIEW 6: LITERARY JEOPARDY ================= -->
         <div id="view-jeopardy" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-8 relative max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-4xl font-display text-white">Culinary Jeopardy</div>
+                    <div class="text-4xl font-display text-white">Literary Jeopardy</div>
                     <div class="flex gap-6">
                         <div class="text-2xl font-bold text-blue-400 font-display">Team A: <span id="jeop-score-a" class="text-white">0</span></div>
                         <div class="text-2xl font-bold text-rose-400 font-display">Team B: <span id="jeop-score-b" class="text-white">0</span></div>
                     </div>
                 </div>
 
-                <!-- NEW: Settings Bar for Risky Mode and Global Timer -->
-                <div class="bg-zinc-900/80 p-4 rounded-xl border border-zinc-700 shadow-md flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-                    <!-- Mode Selector -->
+                <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 shadow-md flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
                     <div class="flex items-center gap-4">
-                        <span class="text-zinc-400 text-sm font-bold uppercase tracking-widest">Game Mode:</span>
+                        <span class="text-indigo-300 text-sm font-bold uppercase tracking-widest">Game Mode:</span>
                         <button id="jeop-mode-btn" onclick="toggleJeopMode()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-emerald-500">Normal (Safe)</button>
-                        <span id="jeop-mode-desc" class="text-xs text-zinc-500 italic hidden md:inline">Wrong answers do not lose points.</span>
+                        <span id="jeop-mode-desc" class="text-xs text-slate-400 italic hidden md:inline">Wrong answers do not lose points.</span>
                     </div>
                     
-                    <!-- Adjustable Global Timer -->
-                    <div class="flex items-center gap-3 bg-black/40 p-2 rounded-lg border border-zinc-600">
-                        <span class="text-zinc-400 text-xs font-bold uppercase tracking-widest mr-2">Base Timer:</span>
+                    <div class="flex items-center gap-3 bg-black/40 p-2 rounded-lg border border-slate-600">
+                        <span class="text-indigo-300 text-xs font-bold uppercase tracking-widest mr-2">Base Timer:</span>
                         <button onclick="adjustJeopGlobalTimer(-5)" class="text-amber-500 hover:text-amber-300 font-bold px-2 text-lg">-5s</button>
                         <span id="jeop-global-time-display" class="text-2xl font-mono text-white font-bold w-12 text-center">30</span>
                         <button onclick="adjustJeopGlobalTimer(5)" class="text-amber-500 hover:text-amber-300 font-bold px-2 text-lg">+5s</button>
                     </div>
                 </div>
 
-                <div class="bg-zinc-900 p-3 rounded-xl border-2 border-zinc-700 shadow-2xl overflow-x-auto">
-                    <div id="jeopardy-board">
-                        <!-- Headers & Cells injected by JS as a strict 5-col grid -->
-                    </div>
+                <div class="bg-slate-900 p-3 rounded-xl border-2 border-slate-700 shadow-2xl overflow-x-auto">
+                    <div id="jeopardy-board"></div>
                 </div>
 
-                <!-- Jeopardy Modal with Timer and Go Back -->
                 <div id="jeop-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-                    <div class="bg-zinc-900 p-8 md:p-12 rounded-3xl border-2 border-amber-600 max-w-4xl w-full text-center relative shadow-2xl">
+                    <div class="bg-slate-900 p-8 md:p-12 rounded-3xl border-2 border-amber-600 max-w-4xl w-full text-center relative shadow-2xl">
                         
-                        <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-zinc-700 pb-6 gap-4">
+                        <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-slate-700 pb-6 gap-4">
                             <h3 id="jeop-cat-val" class="text-amber-400 font-display text-3xl uppercase tracking-widest"></h3>
                             
-                            <!-- Live Question Timer -->
-                            <div class="flex items-center gap-3 bg-black/60 p-3 rounded-xl border border-zinc-600">
-                                <span class="text-zinc-400 text-xs font-bold uppercase tracking-widest">Time:</span>
-                                <span id="jeop-timer-display" class="text-4xl font-mono text-red-400 font-bold w-20 text-center drop-shadow-md">30</span>
-                                <div class="border-l border-zinc-600 pl-4 flex gap-2">
-                                    <button onclick="pauseJeopTimer()" id="jeop-pause-btn" class="bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded text-sm font-bold transition">Pause</button>
+                            <div class="flex items-center gap-3 bg-black/60 p-3 rounded-xl border border-slate-600">
+                                <span class="text-indigo-300 text-xs font-bold uppercase tracking-widest">Time:</span>
+                                <span id="jeop-timer-display" class="text-4xl font-mono text-rose-400 font-bold w-20 text-center drop-shadow-md">30</span>
+                                <div class="border-l border-slate-600 pl-4 flex gap-2">
+                                    <button onclick="pauseJeopTimer()" id="jeop-pause-btn" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded text-sm font-bold transition">Pause</button>
                                 </div>
                             </div>
                         </div>
@@ -511,7 +503,7 @@
                             <p class="text-emerald-400 text-sm font-bold uppercase tracking-widest mb-2">Correct Answer:</p>
                             <p id="jeop-a-text" class="text-white text-3xl mb-12 font-medium"></p>
                             
-                            <p class="text-zinc-400 text-xs font-bold uppercase mb-4 tracking-widest">Award Points To:</p>
+                            <p class="text-indigo-300 text-xs font-bold uppercase mb-4 tracking-widest">Award Points To:</p>
                             <div class="flex flex-wrap justify-center gap-4">
                                 <div class="flex flex-col gap-2">
                                     <button onclick="awardJeopardy(1, true)" class="bg-blue-800 hover:bg-blue-700 border border-blue-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg w-full">+ Team A</button>
@@ -524,95 +516,80 @@
                                 </div>
                                 
                                 <div class="flex flex-col gap-2 justify-start">
-                                    <button onclick="awardJeopardy(0, true)" class="bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg h-full">Nobody</button>
+                                    <button onclick="awardJeopardy(0, true)" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg h-full">Nobody</button>
                                 </div>
                             </div>
                         </div>
 
                         <div class="flex justify-center gap-6 mt-10">
                             <button id="jeop-reveal-btn" onclick="document.getElementById('jeop-answer-area').classList.remove('hidden'); this.classList.add('hidden'); clearInterval(jeopTimerInterval);" class="bg-amber-700 hover:bg-amber-600 text-white font-bold py-4 px-12 rounded-xl transition text-2xl shadow-lg font-display tracking-widest flex-1 max-w-sm">Reveal Answer</button>
-                            <!-- Go Back Button -->
-                            <button onclick="cancelJeopardy()" class="bg-zinc-800 hover:bg-zinc-700 text-white font-bold py-4 px-8 rounded-xl transition text-sm uppercase tracking-widest border border-zinc-600">Go Back / Cancel</button>
+                            <button onclick="cancelJeopardy()" class="bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 px-8 rounded-xl transition text-sm uppercase tracking-widest border border-slate-600">Go Back / Cancel</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VIEW 7: MASTER CHEF TRIVIA (Millionaire) ================= -->
+        <!-- ================= VIEW 7: BESTSELLER TRIVIA (Millionaire) ================= -->
         <div id="view-millionaire" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-8">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-3xl font-display text-amber-400">Master Chef Trivia</div>
+                    <div class="text-3xl font-display text-amber-400">Bestseller Trivia</div>
                 </div>
 
                 <div class="grid lg:grid-cols-3 gap-10">
-                    <!-- Q&A Area -->
                     <div class="lg:col-span-2 flex flex-col justify-end">
-                        <div class="bg-zinc-900 border-2 border-amber-500/50 rounded-2xl p-10 mb-8 shadow-xl relative min-h-[250px] flex items-center justify-center text-center">
-                            <!-- NEW: 15-Second Timer Display -->
-                            <div id="mil-timer-display" class="hidden absolute top-4 right-4 bg-red-600/20 border-2 border-red-500 text-red-400 w-14 h-14 rounded-full flex items-center justify-center text-2xl font-mono font-bold shadow-[0_0_15px_rgba(239,68,68,0.4)]">15</div>
-                            
+                        <div class="bg-slate-900 border-2 border-amber-500/50 rounded-2xl p-10 mb-8 shadow-xl relative min-h-[250px] flex items-center justify-center text-center">
+                            <div id="mil-timer-display" class="hidden absolute top-4 right-4 bg-rose-600/20 border-2 border-rose-500 text-rose-400 w-14 h-14 rounded-full flex items-center justify-center text-2xl font-mono font-bold shadow-[0_0_15px_rgba(225,29,72,0.4)]">15</div>
                             <h3 id="mil-q-text" class="text-2xl md:text-4xl text-white font-display italic leading-relaxed"></h3>
                         </div>
 
-                        <!-- Lifelines -->
                         <div class="flex justify-center gap-4 mb-6">
                             <button id="btn-5050" onclick="use5050()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-full border-2 border-amber-300 shadow-lg transition-all text-sm tracking-widest uppercase">50 / 50</button>
-                            <!-- NEW: Ask the Audience -->
-                            <button id="btn-audience" onclick="useAudience()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full border-2 border-blue-300 shadow-lg transition-all text-sm tracking-widest uppercase">Ask Audience</button>
+                            <button id="btn-audience" onclick="useAudience()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-full border-2 border-indigo-300 shadow-lg transition-all text-sm tracking-widest uppercase">Ask Audience</button>
                         </div>
                         
-                        <!-- NEW: Audience Poll Results -->
-                        <div id="mil-audience-poll" class="hidden bg-blue-900/40 border border-blue-500/50 p-5 rounded-xl mb-6 text-white text-sm font-medium shadow-inner"></div>
+                        <div id="mil-audience-poll" class="hidden bg-indigo-900/40 border border-indigo-500/50 p-5 rounded-xl mb-6 text-white text-sm font-medium shadow-inner"></div>
 
-                        <div id="mil-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- Answer buttons injected here -->
-                        </div>
+                        <div id="mil-options" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                     </div>
 
-                    <!-- Prize Ladder -->
-                    <div class="bg-zinc-900 border border-zinc-700 rounded-2xl p-8 shadow-inner text-right font-display text-xl tracking-wider flex flex-col justify-end gap-3" id="mil-ladder">
-                        <div class="ladder-step py-1 px-4" data-level="9">⭐⭐⭐ Michelin</div>
-                        <div class="ladder-step py-1 px-4" data-level="8">⭐⭐ Michelin</div>
-                        <div class="ladder-step py-1 px-4" data-level="7">⭐ Michelin</div>
-                        <div class="ladder-step py-1 px-4" data-level="6">Executive Chef</div>
-                        <div class="ladder-step py-1 px-4" data-level="5">Head Chef</div>
-                        <div class="ladder-step py-1 px-4" data-level="4">Sous Chef</div>
-                        <div class="ladder-step py-1 px-4" data-level="3">Station Chef</div>
-                        <div class="ladder-step py-1 px-4" data-level="2">Line Cook</div>
-                        <div class="ladder-step py-1 px-4" data-level="1">Prep Cook</div>
-                        <div class="ladder-step py-1 px-4" data-level="0">Dishwasher</div>
+                    <div class="bg-slate-900 border border-slate-700 rounded-2xl p-8 shadow-inner text-right font-display text-xl tracking-wider flex flex-col justify-end gap-3" id="mil-ladder">
+                        <div class="ladder-step py-1 px-4" data-level="9">1,000,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="8">500,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="7">250,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="6">100,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="5">50,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="4">10,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="3">5,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="2">1,000 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="1">500 Copies</div>
+                        <div class="ladder-step py-1 px-4" data-level="0">100 Copies</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ================= VIEW 8: KITCHEN CHAOS (Baamboozle) ================= -->
+        <!-- ================= VIEW 8: WRITER'S BLOCK (Baamboozle) ================= -->
         <div id="view-baamboozle" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-8 relative max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-4xl font-display text-amber-400">Kitchen Chaos</div>
+                    <div class="text-4xl font-display text-amber-400">Writer's Block</div>
                     <div class="flex gap-6">
                         <div class="text-2xl font-bold text-blue-400 font-display">Team A: <span id="bbz-score-a" class="text-white">0</span></div>
                         <div class="text-2xl font-bold text-rose-400 font-display">Team B: <span id="bbz-score-b" class="text-white">0</span></div>
                     </div>
                 </div>
 
-                <!-- Grid of 24 boxes -->
-                <div class="bg-zinc-900 p-4 rounded-xl border-2 border-zinc-700 shadow-2xl">
-                    <div id="bbz-board" class="grid grid-cols-4 md:grid-cols-6 gap-3">
-                        <!-- Tiles injected by JS -->
-                    </div>
+                <div class="bg-slate-900 p-4 rounded-xl border-2 border-slate-700 shadow-2xl">
+                    <div id="bbz-board" class="grid grid-cols-4 md:grid-cols-6 gap-3"></div>
                 </div>
 
-                <!-- Modals for Questions and Powers -->
                 <div id="bbz-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-                    <div class="bg-zinc-900 p-8 md:p-12 rounded-3xl border-2 border-amber-600 max-w-4xl w-full text-center relative shadow-2xl">
+                    <div class="bg-slate-900 p-8 md:p-12 rounded-3xl border-2 border-amber-600 max-w-4xl w-full text-center relative shadow-2xl">
                         
-                        <!-- Question UI -->
                         <div id="bbz-q-area" class="hidden">
                             <p id="bbz-q-text" class="text-white text-4xl md:text-5xl font-display italic mb-12 leading-relaxed"></p>
                             
@@ -620,26 +597,25 @@
                                 <p class="text-amber-400 text-sm font-bold uppercase tracking-widest mb-2">Answer:</p>
                                 <p id="bbz-a-text" class="text-white text-3xl mb-12 font-medium"></p>
                                 
-                                <p class="text-zinc-400 text-xs font-bold uppercase mb-4 tracking-widest">Did they get it right?</p>
+                                <p class="text-indigo-300 text-xs font-bold uppercase mb-4 tracking-widest">Did they get it right?</p>
                                 <div class="flex justify-center gap-4">
                                     <button onclick="resolveBbz(1)" class="bg-blue-800 hover:bg-blue-700 border border-blue-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">+25 Team A</button>
                                     <button onclick="resolveBbz(2)" class="bg-rose-800 hover:bg-rose-700 border border-rose-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">+25 Team B</button>
-                                    <button onclick="resolveBbz(0)" class="bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">Incorrect (Nobody)</button>
+                                    <button onclick="resolveBbz(0)" class="bg-slate-700 hover:bg-slate-600 border border-slate-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">Incorrect (Nobody)</button>
                                 </div>
                             </div>
 
                             <div class="flex justify-center gap-6 mt-10">
                                 <button id="bbz-reveal-btn" onclick="document.getElementById('bbz-answer-area').classList.remove('hidden'); this.classList.add('hidden');" class="bg-amber-700 hover:bg-amber-600 text-white font-bold py-4 px-12 rounded-xl transition text-2xl shadow-lg font-display tracking-widest flex-1 max-w-sm">Reveal Answer</button>
-                                <button onclick="cancelBbz()" class="bg-zinc-700 hover:bg-zinc-600 text-white font-bold py-4 px-8 rounded-xl transition text-sm uppercase tracking-widest border border-zinc-500">Cancel</button>
+                                <button onclick="cancelBbz()" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-8 rounded-xl transition text-sm uppercase tracking-widest border border-slate-500">Cancel</button>
                             </div>
                         </div>
 
-                        <!-- Power Up UI -->
                         <div id="bbz-p-area" class="hidden">
                             <h3 id="bbz-p-title" class="text-6xl font-display text-amber-400 mb-8 uppercase tracking-widest animate-pulse"></h3>
                             <p id="bbz-p-desc" class="text-white text-3xl mb-16 font-medium italic"></p>
                             
-                            <p class="text-zinc-400 text-sm font-bold uppercase mb-6 tracking-widest">Which team picked this tile?</p>
+                            <p class="text-indigo-300 text-sm font-bold uppercase mb-6 tracking-widest">Which team picked this tile?</p>
                             <div class="flex justify-center gap-6">
                                 <button onclick="resolveBbz(1)" class="bg-blue-800 hover:bg-blue-700 border border-blue-500 text-white font-bold py-5 px-12 rounded-xl transition text-2xl shadow-[0_0_20px_rgba(30,64,175,0.6)]">Apply to Team A</button>
                                 <button onclick="resolveBbz(2)" class="bg-rose-800 hover:bg-rose-700 border border-rose-500 text-white font-bold py-5 px-12 rounded-xl transition text-2xl shadow-[0_0_20px_rgba(159,18,57,0.6)]">Apply to Team B</button>
@@ -651,12 +627,12 @@
             </div>
         </div>
 
-        <!-- ================= VIEW 9: GASTRONOMY TYCOON (Monopoly Style) ================= -->
+        <!-- ================= VIEW 9: PUBLISHING TYCOON (True Monopoly) ================= -->
         <div id="view-tycoon" class="view">
             <div class="glass gold-border rounded-3xl p-6 md:p-10 relative max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
                     <button onclick="showView('dashboard')" class="text-amber-500 hover:text-amber-300 font-bold tracking-widest text-sm uppercase">← Back</button>
-                    <div class="text-3xl font-display text-amber-400">Gastronomy Tycoon</div>
+                    <div class="text-3xl font-display text-amber-400">Publishing Tycoon</div>
                 </div>
 
                 <div class="grid lg:grid-cols-4 gap-8">
@@ -664,36 +640,36 @@
                     <div class="lg:col-span-1 space-y-6">
                         <div class="bg-blue-900/60 border-2 border-blue-500/50 p-6 rounded-2xl shadow-lg relative overflow-hidden transition-all" id="tyc-panel-0">
                             <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
-                            <h3 class="text-blue-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>👨‍🍳</span> Team A</h3>
+                            <h3 class="text-blue-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>🖋️</span> Team A</h3>
                             <div class="text-4xl font-black text-white font-mono">$<span id="tyc-score-0">1000</span></div>
                         </div>
                         
                         <div class="bg-rose-900/60 border-2 border-rose-500/50 p-6 rounded-2xl shadow-lg relative overflow-hidden opacity-50 transition-all" id="tyc-panel-1">
                             <div class="absolute top-0 left-0 w-2 h-full bg-rose-500"></div>
-                            <h3 class="text-rose-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>👩‍🍳</span> Team B</h3>
+                            <h3 class="text-rose-300 font-display text-xl mb-1 uppercase tracking-widest flex items-center gap-2"><span>📖</span> Team B</h3>
                             <div class="text-4xl font-black text-white font-mono">$<span id="tyc-score-1">1000</span></div>
                         </div>
 
-                        <div class="bg-zinc-800/80 p-4 rounded-xl border border-zinc-600 text-sm text-zinc-300 shadow-inner">
-                            <h4 class="font-bold text-amber-400 mb-2 uppercase tracking-widest border-b border-zinc-700 pb-1">Rules of the Kitchen</h4>
+                        <div class="bg-slate-800/80 p-4 rounded-xl border border-slate-600 text-sm text-slate-300 shadow-inner">
+                            <h4 class="font-bold text-amber-400 mb-2 uppercase tracking-widest border-b border-slate-700 pb-1">Rules of Publishing</h4>
                             <ul class="list-disc pl-4 space-y-1">
-                                <li>Land on a Property: Answer correctly to earn $200.</li>
-                                <li>Chance Spaces: Draw a mystery card.</li>
-                                <li>Expenses: Pay the bank.</li>
-                                <li>Go bankrupt? You lose!</li>
+                                <li><strong>Unowned Office:</strong> Answer correctly to buy it for $100.</li>
+                                <li><strong>Owned Office:</strong> Land here and pay $100 Royalties to the owner!</li>
+                                <li><strong>Plot Twists:</strong> Draw a mystery card.</li>
+                                <li>Go bankrupt? Your book is cancelled!</li>
                             </ul>
                         </div>
                     </div>
 
                     <!-- Right: The Board -->
                     <div class="lg:col-span-3 relative">
-                        <div class="tycoon-board bg-white/10 p-2 rounded-2xl backdrop-blur-md border border-white/20" id="tycoon-board-grid">
+                        <div class="tycoon-board bg-white/5 p-2 rounded-2xl backdrop-blur-md border border-white/10" id="tycoon-board-grid">
                             <!-- Spaces injected by JS -->
                             
-                            <!-- Center Area (Dice & Events) -->
+                            <!-- Center Area -->
                             <div class="tycoon-center text-center relative z-0">
                                 <h3 class="text-2xl font-display text-white mb-2 tracking-widest uppercase" id="tyc-turn-indicator">Team A's Turn</h3>
-                                <p class="text-zinc-400 text-sm mb-6 italic" id="tyc-status-text">Ready to trade.</p>
+                                <p class="text-indigo-300 text-sm mb-6 italic" id="tyc-status-text">Ready to draft.</p>
                                 
                                 <div class="bg-amber-100 text-amber-900 w-20 h-20 rounded-2xl flex items-center justify-center text-5xl font-black shadow-[0_8px_0_#b45309] mb-8 border-4 border-white" id="tyc-dice-display">
                                     🎲
@@ -705,22 +681,20 @@
                             </div>
 
                             <!-- Player Tokens -->
-                            <div id="token-0" class="player-token">👨‍🍳</div>
-                            <div id="token-1" class="player-token">👩‍🍳</div>
+                            <div id="token-0" class="player-token">🖋️</div>
+                            <div id="token-1" class="player-token">📖</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Event/Quiz Modal -->
                 <div id="tyc-modal" class="hidden fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-                    <div class="bg-zinc-900 p-8 md:p-12 rounded-3xl border-4 border-amber-500 max-w-2xl w-full text-center relative shadow-2xl">
+                    <div class="bg-slate-900 p-8 md:p-12 rounded-3xl border-4 border-amber-500 max-w-2xl w-full text-center relative shadow-2xl">
                         <div id="tyc-modal-header" class="text-amber-400 font-bold uppercase tracking-[0.2em] mb-4 text-sm bg-black/50 py-2 rounded-lg"></div>
                         <h3 id="tyc-modal-title" class="text-3xl md:text-4xl font-display text-white mb-6"></h3>
-                        <p id="tyc-modal-desc" class="text-xl text-zinc-300 mb-8 font-serif leading-relaxed"></p>
+                        <p id="tyc-modal-desc" class="text-xl text-indigo-200 mb-8 font-serif leading-relaxed"></p>
                         
-                        <div id="tyc-options-area" class="grid gap-4 mb-6">
-                            <!-- Answer buttons injected here -->
-                        </div>
+                        <div id="tyc-options-area" class="grid gap-4 mb-6"></div>
                         
                         <div id="tyc-action-area" class="hidden">
                             <button onclick="closeTycoonModal()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl shadow-[0_4px_0_#92400e] w-full max-w-sm mx-auto uppercase tracking-widest">Continue</button>
@@ -731,19 +705,18 @@
             </div>
         </div>
 
-
         <!-- ================= RESULTS VIEW ================= -->
         <div id="view-results" class="view text-center">
             <div class="glass gold-border rounded-3xl p-12 max-w-xl mx-auto animate-pop-in">
-                <div class="text-8xl mb-8">🍽️</div>
-                <h2 class="text-5xl font-display text-amber-400 mb-4">Service Complete!</h2>
-                <p id="results-message" class="text-xl text-zinc-300 mb-10 font-serif italic"></p>
+                <div class="text-8xl mb-8">📚</div>
+                <h2 class="text-5xl font-display text-amber-400 mb-4">Chapter Closed!</h2>
+                <p id="results-message" class="text-xl text-indigo-200 mb-10 font-serif italic"></p>
                 
                 <div class="bg-black/40 rounded-2xl p-8 mb-10 border border-amber-500/20">
-                    <span class="text-sm font-bold text-zinc-400 uppercase tracking-widest block mb-3">Final Result</span>
+                    <span class="text-sm font-bold text-indigo-300 uppercase tracking-widest block mb-3">Final Result</span>
                     <span id="results-score" class="text-6xl font-display text-white">0</span>
                 </div>
-                <button onclick="showView('dashboard')" class="w-full bg-zinc-800 hover:bg-zinc-700 border border-amber-500/50 text-amber-400 font-bold py-5 rounded-xl text-xl transition-all tracking-widest uppercase font-display">Back to Arcade</button>
+                <button onclick="showView('dashboard')" class="w-full bg-slate-800 hover:bg-slate-700 border border-amber-500/50 text-amber-400 font-bold py-5 rounded-xl text-xl transition-all tracking-widest uppercase font-display">Back to Labyrinth</button>
             </div>
         </div>
 
@@ -752,211 +725,213 @@
     <!-- SCRIPTS -->
     <script>
         // ==========================================
-        // DATA BANKS (All 76 words distributed)
+        // DATA BANKS
         // ==========================================
-        
-        // 1. Vocabulary for Order Rush & Recipe Scrambler (20 words)
         const vocabData = [
-            { word: "sustenance", def: "Food and drink regarded as a source of strength or nourishment." },
-            { word: "malnutrition", def: "A lack of proper nutrition caused by not having enough to eat." },
-            { word: "palate", def: "A person's appreciation of taste and flavor." },
-            { word: "caterer", def: "A person who provides food and drink at an event." },
-            { word: "beverages", def: "A drink, especially one other than water." },
-            { word: "entrées", def: "The main course of a meal." },
-            { word: "texture", def: "The feel, appearance, or consistency of a food." },
-            { word: "gourmet", def: "High-quality, perfectly prepared food." },
-            { word: "digestion", def: "The process of breaking down food in the body." },
-            { word: "ingestion", def: "The process of taking food or drink into the body." },
-            { word: "aperitif", def: "An alcoholic drink taken before a meal to stimulate the appetite." },
-            { word: "cuisine", def: "A style or method of cooking characteristic of a particular country." },
-            { word: "fare", def: "A range of food of a particular type (e.g., traditional English fare)." },
-            { word: "starchy", def: "Containing a lot of starch, like potatoes or pasta." },
-            { word: "savoury", def: "Salty or spicy food, rather than sweet." },
-            { word: "tasteless", def: "Completely lacking flavor." },
-            { word: "stale", def: "No longer fresh; hard, musty, or dry bread/cake." },
-            { word: "nutrients", def: "Substances that provide nourishment essential for growth." },
-            { word: "ingredients", def: "Any of the foods combined to make a particular dish." },
-            { word: "instructions", def: "Detailed information telling how something should be cooked or done." }
+            { word: "manuscript", def: "A book, document, or piece of music written by hand rather than typed or printed." },
+            { word: "narrative", def: "A spoken or written account of connected events; a story." },
+            { word: "metaphor", def: "A figure of speech in which a word or phrase is applied to an object or action to which it is not literally applicable." },
+            { word: "synopsis", def: "A brief summary or general survey of something, like a plot." },
+            { word: "imagery", def: "Visually descriptive or figurative language, especially in a literary work." },
+            { word: "prose", def: "Written or spoken language in its ordinary form, without metrical structure." },
+            { word: "myth", def: "A traditional story, especially one concerning the early history of a people or explaining a natural phenomenon." },
+            { word: "expedition", def: "A journey undertaken by a group of people with a particular purpose." },
+            { word: "diversion", def: "An activity that diverts the mind from tedious or serious concerns; a recreation or pastime." },
+            { word: "portrayal", def: "A depiction of someone or something in a work of art or literature." },
+            { word: "acquisition", def: "An asset or object bought or obtained, typically by a library or museum." },
+            { word: "emergence", def: "The process of coming into existence or prominence." },
+            { word: "literate", def: "Able to read and write." },
+            { word: "suspenseful", def: "Arousing excited expectation or uncertainty about what may happen." },
+            { word: "disastrous", def: "Causing great damage; highly unsuccessful." },
+            { word: "credible", def: "Able to be believed; convincing." },
+            { word: "conflict", def: "A serious disagreement or argument; the main problem in a story." },
+            { word: "resolution", def: "The action of solving a problem or dispute; the end of a story." },
+            { word: "script", def: "The written text of a play, film, or broadcast." },
+            { word: "browsing", def: "Surveying goods for sale in a leisurely and casual way." }
         ];
 
-        // 2. Pantry Match Pairs (16 words)
         const memoryPairsData = [
-            { id: 1, text: "Sugary" }, { id: 1, text: "Desserts" },
-            { id: 2, text: "Undernourishment" }, { id: 2, text: "Malnutrition" },
-            { id: 3, text: "Bib" }, { id: 3, text: "Napkin" },
-            { id: 4, text: "Mouth" }, { id: 4, text: "Stomach" },
-            { id: 5, text: "Diner" }, { id: 5, text: "Fast food" },
-            { id: 6, text: "Treats" }, { id: 6, text: "Candies" },
-            { id: 7, text: "Refreshment" }, { id: 7, text: "Beverages" },
-            { id: 8, text: "Expenses" }, { id: 8, text: "Expenditure" }
+            { id: 1, text: "Verse" }, { id: 1, text: "Prose" },
+            { id: 2, text: "Fiction" }, { id: 2, text: "Myth" },
+            { id: 3, text: "Setting" }, { id: 3, text: "Destination" },
+            { id: 4, text: "Narrator" }, { id: 4, text: "Script" },
+            { id: 5, text: "Flaws" }, { id: 5, text: "Traits" },
+            { id: 6, text: "Dictating" }, { id: 6, text: "Browsing" },
+            { id: 7, text: "Composed of" }, { id: 7, text: "Based on" },
+            { id: 8, text: "Beneficial" }, { id: 8, text: "Disastrous" }
         ];
 
-        // 3. Pressure Cooker (Bomb Game) - 15 context sentences
         const bombQuestions = [
-            { q: "The farmer was annoyed because his field was full of _____.", a: "weeds", w1: "crops", w2: "nutrients" },
-            { q: "We need to buy more _____ before we can bake the cake.", a: "ingredients", w1: "instructions", w2: "expenses" },
-            { q: "The bread was left out for three days and became completely _____.", a: "stale", w1: "fruity", w2: "savoury" },
-            { q: "Please tie this _____ around the baby's neck before feeding.", a: "bib", w1: "apron", w2: "cover" },
-            { q: "The new chef's dishes are _____ delicious!", a: "distinctly", w1: "moderately", w2: "increasingly" },
-            { q: "Lack of food during the drought led to widespread _____.", a: "undernourishment", w1: "ingestion", w2: "disposal" },
-            { q: "A professional chef usually wears a white coat and an _____.", a: "apron", w1: "tissue", w2: "outlet" },
-            { q: "The restaurant specializes in fresh _____, like crabs and lobsters.", a: "seafood", w1: "crops", w2: "snacks" },
-            { q: "After the heavy feast, his _____ felt very full and tight.", a: "abdomen", w1: "palate", w2: "taste" },
-            { q: "They made a _____ at the fancy restaurant for 8:00 PM.", a: "reservation", w1: "outlet", w2: "treatment" },
-            { q: "The _____ prepared wonderful cocktails for all the guests.", a: "bartenders", w1: "caterer", w2: "chef" },
-            { q: "The hungry kids waited _____ for the ice cream to arrive.", a: "eagerly", w1: "excessively", w2: "increasingly" },
-            { q: "The medicine aids in the _____ of nutrients into the bloodstream.", a: "absorption", w1: "disposal", w2: "feeding" },
-            { q: "We cooked a huge _____ to celebrate the winter holiday.", a: "feast", w1: "takeaway", w2: "aperitif" },
-            { q: "That new diet is quite _____; it provides all necessary vitamins.", a: "sensible", w1: "stimulating", w2: "tasteless" }
+            { q: "The author's latest book is a thrilling ____.", a: "narrative", w1: "clearance", w2: "projection" },
+            { q: "Before publishing, she wrote the entire ____ by hand.", a: "manuscript", w1: "commercial", w2: "study" },
+            { q: "The story ended with a very satisfying ____.", a: "resolution", w1: "conflict", w2: "diversion" },
+            { q: "The poem was full of beautiful and vivid ____.", a: "imagery", w1: "components", w2: "entities" },
+            { q: "He used a clever ____ to compare the sea to a monster.", a: "metaphor", w1: "equation", w2: "clearance" },
+            { q: "The main character's fatal ____ led to his tragic downfall.", a: "flaws", w1: "traits", w2: "supplements" },
+            { q: "I spent hours just ____ through the books in the library.", a: "browsing", w1: "dictating", w2: "formalizing" },
+            { q: "The play's ____ takes place in 19th century London.", a: "setting", w1: "narrator", w2: "synopsis" },
+            { q: "Her explanation was highly ____, so everyone believed her.", a: "credible", w1: "disastrous", w2: "suspenseful" },
+            { q: "The central ____ between the two brothers drove the plot.", a: "conflict", w1: "resolution", w2: "loyalty" },
+            { q: "The movie is a completely ____ account of what really happened.", a: "fictionalized", w1: "printed", w2: "empathic" },
+            { q: "Please write a short ____ summarizing the plot of your novel.", a: "synopsis", w1: "amusement", w2: "manifestation" },
+            { q: "The actor delivered an incredibly emotional ____.", a: "performance", w1: "acquisition", w2: "interference" },
+            { q: "Many ancient cultures explained natural events through ____.", a: "myth", w1: "prose", w2: "requirements" },
+            { q: "The sudden ____ of the monster terrified the readers.", a: "emergence", w1: "diversion", w2: "clearance" },
+            { q: "The critics gave the new book absolutely ____ reviews.", a: "disastrous", w1: "obedient", w2: "adhesive" },
+            { q: "We must ____ to finishing this draft by Friday.", a: "commit", w1: "achieve", w2: "reckon" },
+            { q: "Reading everyday is highly ____ for your vocabulary.", a: "beneficial", w1: "imperative", w2: "staggering" },
+            { q: "Most novels are written in standard ____, not poetry.", a: "prose", w1: "verse", w2: "aspects" },
+            { q: "The ____ of the story was the voice of an old man.", a: "narrator", w1: "setting", w2: "conception" }
         ];
 
-        // 4. Menu Maker (Sentence Clash) - 10 pairs
         const sentenceGroups = [
-            { words: ["Crops", "Nourishment"], example: "The newly harvested crops provided much-needed nourishment to the village." },
-            { words: ["Chef", "Instructions"], example: "The head chef gave strict instructions on how to prepare the gourmet meal." },
-            { words: ["Sugary", "Candies"], example: "Eating too many sugary candies can completely ruin your appetite for dinner." },
-            { words: ["Fast food", "Convenient"], example: "Fast food is very convenient, but it often lacks essential healthy nutrients." },
-            { words: ["Taste", "Palpable"], example: "The tension in the kitchen was palpable after the critic complained about the taste." },
-            { words: ["Stocks", "Beverages"], example: "The manager checked the stocks to ensure we had enough beverages for the party." },
-            { words: ["Tangible", "Delight"], example: "There was a tangible sense of delight in the dining room when the desserts arrived." },
-            { words: ["Caterer", "Provision"], example: "The caterer was responsible for the provision of all the snacks and hot entrées." },
-            { words: ["Expenditure", "Treatment"], example: "The expenditure for the medical treatment of malnutrition was covered by charity." },
-            { words: ["Moderately", "Tolerable"], example: "The spicy soup was only moderately hot, making it highly tolerable for most guests." }
+            { words: ["Suspenseful", "Narrative"], example: "The author crafted a highly suspenseful narrative that kept readers guessing until the very end." },
+            { words: ["Manuscript", "Published"], example: "After years of careful editing, the original manuscript was finally published as a hardcover book." },
+            { words: ["Imagery", "Metaphor"], example: "The poet used vivid imagery and a powerful metaphor to describe the stormy ocean." },
+            { words: ["Conflict", "Resolution"], example: "The central conflict of the story reached a satisfying resolution in the final chapter." },
+            { words: ["Disastrous", "Reviews"], example: "The disastrous reviews from the harsh critics completely ruined the book's sales." },
+            { words: ["Fictionalized", "Account"], example: "The movie is a fictionalized account of a true historical event, adding drama for the audience." },
+            { words: ["Setting", "Emergence"], example: "The dark, foggy setting perfectly matched the sudden emergence of the villain." },
+            { words: ["Credible", "Plot"], example: "For science fiction to work, the author must build a credible plot that makes sense." },
+            { words: ["Prose", "Verse"], example: "While the introduction was written in beautiful prose, the final pages were composed of rhyming verse." },
+            { words: ["Myth", "Conception"], example: "The ancient myth shaped their early conception of how the universe was created." }
         ];
 
-        // 5. Culinary Jeopardy - 5 Columns x 4 Rows
         const jeopardyCategories = [
             {
-                name: "Food Types",
+                name: "Literary Elements",
                 questions: [
-                    { q: "Food from the ocean, like fish, shrimp, and crabs.", a: "What is Seafood?" },
-                    { q: "A quick, cheap meal you buy and take away.", a: "What is Fast food (or Takeaway)?" },
-                    { q: "High-quality, expertly prepared, and often expensive food.", a: "What is Gourmet?" },
-                    { q: "Salty or spicy food; the opposite of sweet.", a: "What is Savoury?" }
+                    { q: "The time and place where a story occurs.", a: "What is the Setting?" },
+                    { q: "The main problem or struggle in a narrative.", a: "What is the Conflict?" },
+                    { q: "The conclusion or ending where the problem is solved.", a: "What is the Resolution?" },
+                    { q: "The underlying meaning or main idea of a story.", a: "What is the Theme?" }
                 ]
             },
             {
-                name: "The Body",
+                name: "The Writing Process",
                 questions: [
-                    { q: "The part of the body where food goes after swallowing.", a: "What is the Stomach (or Abdomen)?" },
-                    { q: "The biological process of breaking down food.", a: "What is Digestion?" },
-                    { q: "The physical desire or feeling of needing food.", a: "What is an Appetite?" },
-                    { q: "The process of taking food or drink into the body.", a: "What is Ingestion?" }
+                    { q: "An original, unpublished document written by an author.", a: "What is a Manuscript?" },
+                    { q: "To speak words aloud so someone else (or a machine) can type them.", a: "What is Dictating?" },
+                    { q: "A brief summary that outlines the plot of a book.", a: "What is a Synopsis?" },
+                    { q: "When a book is finally printed and released to the public.", a: "What is Published?" }
                 ]
             },
             {
-                name: "Dining Out",
+                name: "Types of Text",
                 questions: [
-                    { q: "You need to make one of these to guarantee a table at a popular place.", a: "What is a Reservation?" },
-                    { q: "The main course of a formal meal.", a: "What is an Entrée?" },
-                    { q: "The person who cooks the food professionally in the kitchen.", a: "What is a Chef?" },
-                    { q: "A casual restaurant or a style of service where you get your own food.", a: "What is a Diner (or Self-service)?" }
+                    { q: "Ordinary written language, without the metrical structure of poetry.", a: "What is Prose?" },
+                    { q: "A story that is entirely made up and not based on strict facts.", a: "What is Fiction?" },
+                    { q: "An ancient traditional story, often involving gods or heroes.", a: "What is a Myth?" },
+                    { q: "Writing arranged with a metrical rhythm, typically rhyming.", a: "What is Verse?" }
                 ]
             },
             {
-                name: "The Kitchen",
+                name: "Adjectives",
                 questions: [
-                    { q: "Things you mix together to make a specific recipe.", a: "What are Ingredients?" },
-                    { q: "What a cook wears to protect their clothes from spills.", a: "What is an Apron?" },
-                    { q: "A person hired to provide food and service for a special event.", a: "What is a Caterer?" },
-                    { q: "The step-by-step directions to cook a dish.", a: "What are Instructions?" }
+                    { q: "Able to read and write.", a: "What is Literate?" },
+                    { q: "Creating a feeling of excited uncertainty about what will happen.", a: "What is Suspenseful?" },
+                    { q: "Causing great damage or being highly unsuccessful.", a: "What is Disastrous?" },
+                    { q: "Able to be believed; convincing.", a: "What is Credible?" }
                 ]
             },
             {
-                name: "Nutrition",
+                name: "Phrases & Connections",
                 questions: [
-                    { q: "Describing food that is completely lacking in flavor.", a: "What is Tasteless?" },
-                    { q: "Essential substances or compounds that provide nourishment.", a: "What are Nutrients?" },
-                    { q: "A severe health condition caused by a lack of proper nutrition.", a: "What is Malnutrition?" },
-                    { q: "Containing a lot of carbohydrates, like bread, rice, and potatoes.", a: "What is Starchy?" }
+                    { q: "Fill in the blank: The story is '_____ on' true events.", a: "What is 'Based'?" },
+                    { q: "Fill in the blank: Water is '_____ of' hydrogen and oxygen.", a: "What is 'Composed'?" },
+                    { q: "After traveling for years, he finally '_____ down' in Paris.", a: "What is 'Settled'?" },
+                    { q: "The accident '_____ from' a lack of attention to detail.", a: "What is 'Resulted'?" }
                 ]
             }
         ];
 
-        // 6. Master Chef Trivia (Millionaire)
         const mogulQuestions = [
-            { q: "What do we call unwanted plants growing in a garden or field?", options: ["Weeds", "Crops", "Herbs", "Trees"], ans: 0 },
-            { q: "Which word means 'food and drink regarded as a source of strength'?", options: ["Disposal", "Sustenance", "Expenditure", "Texture"], ans: 1 },
-            { q: "What is an alcoholic drink taken before a meal to stimulate appetite called?", options: ["Dessert", "Entrée", "Aperitif", "Beverage"], ans: 2 },
-            { q: "If bread is old, dry, and no longer fresh, it is...", options: ["Stale", "Fruity", "Tangible", "Stimulating"], ans: 0 },
-            { q: "A paper or cloth used at the table for wiping the mouth and fingers is a...", options: ["Bib", "Napkin", "Apron", "Cover"], ans: 1 },
-            { q: "The word for a range of food of a particular type (e.g. traditional English _____) is...", options: ["Fare", "Cuisine", "Outlet", "Provision"], ans: 0 },
-            { q: "If you wait for your dessert with a lot of enthusiasm, you wait...", options: ["Excessively", "Moderately", "Eagerly", "Distinctly"], ans: 2 },
-            { q: "A feeling of great pleasure or joy when eating something amazing is...", options: ["Approval", "Treatment", "Expenditure", "Delight"], ans: 3 },
-            { q: "The person who mixes and serves drinks at a pub is the...", options: ["Caterer", "Bartender", "Chef", "Diner"], ans: 1 },
-            { q: "Something that is clear, real, and able to be touched or felt is...", options: ["Tangible", "Sensible", "Palatable", "Tolerable"], ans: 0 }
+            { q: "Which word means 'able to read and write'?", options: ["Credible", "Literate", "Empathic", "Obedient"], ans: 1 },
+            { q: "A brief summary of a book's plot is called a...", options: ["Manuscript", "Metaphor", "Synopsis", "Diversion"], ans: 2 },
+            { q: "Ordinary written language, not poetry, is known as...", options: ["Prose", "Verse", "Myth", "Script"], ans: 0 },
+            { q: "Which of these describes a book that is very exciting and keeps you guessing?", options: ["Disastrous", "Beneficial", "Suspenseful", "Consistent"], ans: 2 },
+            { q: "A figure of speech comparing two different things is a...", options: ["Synopsis", "Narrative", "Metaphor", "Conception"], ans: 2 },
+            { q: "The original, handwritten or typed document of a book is the...", options: ["Illustration", "Manuscript", "Attachment", "Supplement"], ans: 1 },
+            { q: "If a review is 'disastrous', it means it is...", options: ["Highly positive", "Very confusing", "Highly negative/damaging", "Extremely long"], ans: 2 },
+            { q: "To speak aloud so someone else can write it down is...", options: ["Browsing", "Dictating", "Checking", "Surfing"], ans: 1 },
+            { q: "A traditional story explaining natural events, often with gods, is a...", options: ["Prose", "Commercial", "Myth", "Study"], ans: 2 },
+            { q: "The underlying message or main idea of a literary work is its...", options: ["Theme", "Setting", "Conflict", "Destination"], ans: 0 },
+            { q: "Visually descriptive language that paints a picture in the reader's mind is...", options: ["Verse", "Imagery", "Entities", "Equations"], ans: 1 },
+            { q: "To formally make a book available to the public for sale is to have it...", options: ["Published", "Fantasized", "Dismissed", "Handled"], ans: 0 },
+            { q: "A character's negative traits that lead to their downfall are called...", options: ["Aspects", "Performances", "Flaws", "Orders"], ans: 2 },
+            { q: "If a story is believable and makes sense, it is considered...", options: ["Credible", "Adhesive", "Imperative", "Obedient"], ans: 0 },
+            { q: "The process of coming into existence or prominence is...", options: ["Acquisition", "Treatment", "Amusement", "Emergence"], ans: 3 }
         ];
 
-        // 7. Kitchen Chaos (Baamboozle)
         const baamData = [
-            { type: 'q', q: "A small piece of paper to blow your nose or wipe your mouth.", a: "Tissue" },
-            { type: 'q', q: "Food you buy at a restaurant but eat at home.", a: "Takeaway" },
-            { type: 'q', q: "A small, casual American-style restaurant.", a: "Diner" },
-            { type: 'q', q: "A person's appreciation of flavor and taste.", a: "Palate" },
-            { type: 'q', q: "A formal expression of agreeing that something is good.", a: "Approval" },
-            { type: 'q', q: "The process of throwing away or getting rid of waste.", a: "Disposal" },
-            { type: 'q', q: "Plants grown in large quantities for food.", a: "Crops" },
-            { type: 'q', q: "A word describing a flavor that tastes like apples or berries.", a: "Fruity" },
-            { type: 'q', q: "Sweet treats made mostly of sugar.", a: "Candies" },
-            { type: 'q', q: "A word meaning 'making you feel more active or energetic'.", a: "Stimulating" },
-            { type: 'q', q: "A place or shop where things are sold.", a: "Outlet" },
-            { type: 'q', q: "A synonym for 'Nourishment'.", a: "Nutriment" },
-            { type: 'q', q: "Doing something way too much.", a: "Excessively" },
-            { type: 'q', q: "To put something over another thing to protect or hide it.", a: "Cover" },
-            { type: 'q', q: "Food that comes from nearby farms is...", a: "Local" },
-            { type: 'q', q: "A feeling or atmosphere so intense it seems almost physical.", a: "Palpable" },
-            { type: 'q', q: "Things consisting of two or more separate elements mixed together.", a: "Compounds" },
-            { type: 'q', q: "A synonym for 'giving food to someone/something'.", a: "Feeding" },
+            { type: 'q', q: "A spoken or written account of connected events; a story.", a: "Narrative" },
+            { type: 'q', q: "A journey undertaken by a group with a particular purpose.", a: "Expedition" },
+            { type: 'q', q: "An activity that diverts the mind from serious concerns.", a: "Diversion" },
+            { type: 'q', q: "A depiction of someone in a work of art or literature.", a: "Portrayal" },
+            { type: 'q', q: "The action of buying or obtaining an object.", a: "Acquisition" },
+            { type: 'q', q: "The way a person behaves in a particular place or situation.", a: "Conduct" },
+            { type: 'q', q: "A strong feeling of support or allegiance.", a: "Loyalty" },
+            { type: 'q', q: "To happen as a consequence of something else.", a: "Resulted from" },
+            { type: 'q', q: "To be made up of various parts.", a: "Composed of" },
+            { type: 'q', q: "To establish a home and live a quiet life.", a: "Settled down" },
+            { type: 'q', q: "Pictures or drawings used to explain a text.", a: "Illustrations" },
+            { type: 'q', q: "Things that are added to complete or enhance something.", a: "Supplements" },
+            { type: 'q', q: "Showing an ability to understand and share the feelings of another.", a: "Empathic" },
+            { type: 'q', q: "To pledge or bind oneself to a certain course or policy.", a: "Commit" },
+            { type: 'q', q: "To unexpectedly be faced with or experience something difficult.", a: "Encounter" },
+            { type: 'q', q: "Of vital importance; crucial.", a: "Imperative" },
+            { type: 'q', q: "Complying or willing to comply with orders or requests.", a: "Obedient" },
+            { type: 'q', q: "Able to stick fast to a surface or object; sticky.", a: "Adhesive" },
 
             // Power-ups
-            { type: 'p', action: 'gain', amount: 50, title: '⭐ Michelin Star!', desc: 'The critics loved your food. Gain 50 points!' },
-            { type: 'p', action: 'lose', amount: 25, title: '🤢 Food Poisoning!', desc: 'The chicken was raw. Lose 25 points.' },
-            { type: 'p', action: 'steal', amount: 50, title: '🕵️ Secret Recipe Stolen!', desc: 'Steal up to 50 points from the rival kitchen.' },
-            { type: 'p', action: 'swap', amount: 0, title: '🔄 Kitchen Swap!', desc: 'Swap scores with the other team.' },
-            { type: 'p', action: 'bankrupt', amount: 0, title: '🤬 Gordon Ramsay Yells!', desc: 'He shut down your kitchen. You lose ALL points!' },
-            { type: 'p', action: 'gain', amount: 100, title: '🩺 Health Inspector Pass!', desc: 'Perfect cleanliness! Gain 100 points!' }
+            { type: 'p', action: 'gain', amount: 50, title: '🌟 Bestseller!', desc: 'Your book hit #1 on the charts. Gain 50 points!' },
+            { type: 'p', action: 'lose', amount: 25, title: '🌪️ Writer\'s Block!', desc: 'You stare at a blank page. Lose 25 points.' },
+            { type: 'p', action: 'steal', amount: 50, title: '🕵️ Plagiarized!', desc: 'You stole a great idea. Steal up to 50 points from the rival publisher.' },
+            { type: 'p', action: 'swap', amount: 0, title: '🔄 Editor\'s Swap!', desc: 'The editor swapped your manuscripts. Swap scores with the other team.' },
+            { type: 'p', action: 'bankrupt', amount: 0, title: '🔥 Server Crash!', desc: 'You lost your entire digital draft. Score drops to 0.' },
+            { type: 'p', action: 'gain', amount: 100, title: '🎬 Movie Adaptation!', desc: 'Hollywood bought the rights to your book! Gain 100 points!' }
         ];
 
-        // 8. Gastronomy Tycoon (Monopoly Data)
+        // TRUE MONOPOLY DATA
         const tycoonSpaces = [
             { id: 0, name: "START", type: "corner", icon: "🏁", col: 1, row: 1 },
-            { id: 1, name: "Fast Food Diner", type: "prop", color: "#fca5a5", icon: "🍔", col: 2, row: 1 },
-            { id: 2, name: "Mystery Dish", type: "chance", icon: "❓", col: 3, row: 1 },
-            { id: 3, name: "The Bakery", type: "prop", color: "#fca5a5", icon: "🥐", col: 4, row: 1 },
-            { id: 4, name: "HEALTH INSPECTOR", type: "penalty", icon: "🩺", col: 5, row: 1 },
-            { id: 5, name: "Gourmet Seafood", type: "prop", color: "#93c5fd", icon: "🦞", col: 5, row: 2 },
-            { id: 6, name: "Caterer's Kitchen", type: "prop", color: "#93c5fd", icon: "🧑‍🍳", col: 5, row: 3 },
-            { id: 7, name: "Expenses", type: "tax", icon: "💸", col: 5, row: 4 },
-            { id: 8, name: "THE FEAST", type: "bonus", icon: "🍲", col: 5, row: 5 },
-            { id: 9, name: "Local Farms", type: "prop", color: "#86efac", icon: "🚜", col: 4, row: 5 },
-            { id: 10, name: "Mystery Dish", type: "chance", icon: "❓", col: 3, row: 5 },
-            { id: 11, name: "Fresh Crops", type: "prop", color: "#86efac", icon: "🌾", col: 2, row: 5 },
-            { id: 12, name: "DISHWASHING", type: "penalty", icon: "🧼", col: 1, row: 5 },
-            { id: 13, name: "Aperitif Lounge", type: "prop", color: "#fde047", icon: "🍸", col: 1, row: 4 },
-            { id: 14, name: "Expenses", type: "tax", icon: "💸", col: 1, row: 3 },
-            { id: 15, name: "The Grand Diner", type: "prop", color: "#fde047", icon: "🍽️", col: 1, row: 2 }
+            { id: 1, name: "The Printing Press", type: "prop", color: "#fca5a5", icon: "🖨️", col: 2, row: 1, owner: null },
+            { id: 2, name: "Plot Twist", type: "chance", icon: "❓", col: 3, row: 1 },
+            { id: 3, name: "Literary Agent", type: "prop", color: "#fca5a5", icon: "🤝", col: 4, row: 1, owner: null },
+            { id: 4, name: "PLAGIARISM FINE", type: "penalty", icon: "⚖️", col: 5, row: 1 },
+            { id: 5, name: "Poetry Corner", type: "prop", color: "#93c5fd", icon: "✒️", col: 5, row: 2, owner: null },
+            { id: 6, name: "Fiction House", type: "prop", color: "#93c5fd", icon: "🐉", col: 5, row: 3, owner: null },
+            { id: 7, name: "Editing Fees", type: "tax", icon: "💸", col: 5, row: 4 },
+            { id: 8, name: "BESTSELLER", type: "bonus", icon: "🌟", col: 5, row: 5 },
+            { id: 9, name: "Library Archives", type: "prop", color: "#86efac", icon: "🏛️", col: 4, row: 5, owner: null },
+            { id: 10, name: "Plot Twist", type: "chance", icon: "❓", col: 3, row: 5 },
+            { id: 11, name: "Local Bookstore", type: "prop", color: "#86efac", icon: "📚", col: 2, row: 5, owner: null },
+            { id: 12, name: "WRITER'S BLOCK", type: "penalty", icon: "🧱", col: 1, row: 5 },
+            { id: 13, name: "Journalism Desk", type: "prop", color: "#fde047", icon: "📰", col: 1, row: 4, owner: null },
+            { id: 14, name: "Marketing Costs", type: "tax", icon: "💸", col: 1, row: 3 },
+            { id: 15, name: "The Grand Publisher", type: "prop", color: "#fde047", icon: "🏢", col: 1, row: 2, owner: null }
         ];
 
         const tycoonQuiz = [
-            { q: "What does 'Sustenance' mean?", opts: ["Food that provides strength", "A type of dessert", "A cooking tool"], a: 0 },
-            { q: "If food is 'Stale', it is...", opts: ["Fresh out of the oven", "Old, dry, and no longer fresh", "Very spicy"], a: 1 },
-            { q: "What is an 'Aperitif'?", opts: ["A drink taken before a meal to stimulate appetite", "A heavy meat dish", "The final dessert course"], a: 0 },
-            { q: "The word 'Palpable' means...", opts: ["Tasting very good", "A feeling so intense it seems physical", "A type of local fish"], a: 1 },
-            { q: "What does it mean to 'Repatriate' an artifact?", opts: ["To clean it thoroughly", "To send it back to its home country", "To sell it for profit"], a: 1 },
-            { q: "Which word is a synonym for 'Approval'?", opts: ["Justification", "Agreement/Validation", "Consequence"], a: 1 },
-            { q: "What is the definition of 'Cuisine'?", opts: ["A style of cooking characteristic of a particular country", "The chef's uniform", "The bill at the end of a meal"], a: 0 },
-            { q: "If a meal is 'Savoury', it is...", opts: ["Very sweet and sugary", "Salty or spicy, not sweet", "Lacking any flavor"], a: 1 },
-            { q: "What are 'Nutrients'?", opts: ["Substances that provide essential nourishment for growth", "Fake ingredients used in fast food", "The total cost of a meal"], a: 0 },
-            { q: "What does 'Digestion' refer to?", opts: ["Cooking food at high temperatures", "The process of breaking down food in the body", "Throwing away leftovers"], a: 1 }
+            { q: "What is a 'Manuscript'?", opts: ["A handwritten or typed draft", "The final printed book", "A book review"], a: 0 },
+            { q: "If a book is 'Suspenseful', it is...", opts: ["Boring and slow", "Exciting and keeps you guessing", "Written entirely in poems"], a: 1 },
+            { q: "The term 'Prose' refers to...", opts: ["Rhyming poetry", "Ordinary written language", "A short summary"], a: 1 },
+            { q: "What does 'Credible' mean?", opts: ["Unbelievable", "Convincing and believable", "Very expensive"], a: 1 },
+            { q: "A 'Synopsis' is...", opts: ["A brief summary of a plot", "A long, detailed chapter", "A type of fictional monster"], a: 0 },
+            { q: "Which word means 'causing great damage'?", opts: ["Beneficial", "Disastrous", "Imperative"], a: 1 },
+            { q: "The 'Setting' of a story is its...", opts: ["Main character", "Time and place", "Underlying message"], a: 1 },
+            { q: "What is a 'Metaphor'?", opts: ["A comparison not using like/as", "A very long sentence", "A book's front cover"], a: 0 },
+            { q: "If something is 'Imperative', it is...", opts: ["Optional", "Crucial or necessary", "Confusing"], a: 1 },
+            { q: "What does 'Fictionalized' mean?", opts: ["100% true facts", "Turned into a made-up story", "Printed in black and white"], a: 1 }
         ];
 
         const tycoonChance = [
-            { title: "Food Critic Review!", desc: "The local critic gave your Cuisine great Approval. Your restaurant is increasingly popular! Collect $200.", change: 200 },
-            { title: "Health Violation!", desc: "The inspector found STALE ingredients and poor Disposal methods in your kitchen. Pay $150 in Expenses.", change: -150 },
-            { title: "Supply Chain Issue!", desc: "The price of Fresh Crops and Seafood has skyrocketed excessively. Pay $100.", change: -100 },
-            { title: "Catering Success!", desc: "Your Caterer successfully managed a massive Feast for a celebrity. You eagerly collect $250!", change: 250 },
-            { title: "Malnutrition Scandal", desc: "A rival Fast Food Diner was shut down. You gain their hungry customers seeking real Sustenance. Collect $150.", change: 150 },
-            { title: "Broken Equipment", desc: "The main oven's Texture and temperature controls are broken. It's a palpable disaster. Pay $200.", change: -200 }
+            { title: "Great Review!", desc: "The Times gave your Novel an amazing review. Your sales are staggering! Collect $200.", change: 200 },
+            { title: "Typo Disaster!", desc: "You printed 10,000 copies with a disastrous typo on the cover. Pay $150.", change: -150 },
+            { title: "Book Deal!", desc: "A major studio wants to turn your Narrative into a movie script. Collect $250!", change: 250 },
+            { title: "Coffee Spill!", desc: "You spilled coffee on your only Manuscript. You must pay $100 to hire someone to retype it.", change: -100 },
+            { title: "Viral Sensation", desc: "A famous influencer loved your Imagery and promoted your book. Collect $150.", change: 150 },
+            { title: "Lawsuit", desc: "Someone claims your main Character is based on them. Pay $200 in legal fees.", change: -200 }
         ];
 
         // ==========================================
@@ -990,9 +965,8 @@
             if (type === 'sentence') initSentenceGame();
             if (type === 'jeopardy') initJeopardy();
             if (type === 'restoration') initRestoration();
-            if (type === 'vaultcracker') initVaultCracker();
             if (type === 'defuse') initDefuse();
-            if (type === 'roleplay') initRoleplay();
+            if (type === 'millionaire') initMillionaire();
             if (type === 'baamboozle') initBaamboozle();
             if (type === 'tycoon') initTycoon();
         }
@@ -1005,7 +979,7 @@
         }
 
         // ==========================================
-        // GAME 1: ORDER RUSH (Speed Run)
+        // GAME 1: MANUSCRIPT RUSH
         // ==========================================
         let srTimeLeft = 60, srCurrentWord = null, srDeck = [];
         function initSpeedRun() {
@@ -1013,11 +987,11 @@
             updateSrUI(); showView('speedrun'); nextSrQuestion();
             globalTimerInterval = setInterval(() => {
                 srTimeLeft--; updateSrUI();
-                if (srTimeLeft <= 0) endGame("Time's up! The kitchen is closed.");
+                if (srTimeLeft <= 0) endGame("Time's up! The deadline passed.");
             }, 1000);
         }
         function updateSrUI() {
-            document.getElementById('sr-score').textContent = `Tips: $${score}`;
+            document.getElementById('sr-score').textContent = `Sales: ${score}`;
             document.getElementById('sr-time-text').textContent = srTimeLeft;
             const bar = document.getElementById('sr-timer-bar');
             bar.style.width = `${(srTimeLeft / 60) * 100}%`;
@@ -1026,7 +1000,7 @@
         function nextSrQuestion() {
             const playArea = document.getElementById('sr-play-area');
             playArea.classList.remove('animate-pop-in'); void playArea.offsetWidth; playArea.classList.add('animate-pop-in');
-            if (srDeck.length === 0) srDeck = shuffleArray([...vocabData]); // Infinite loop fix
+            if (srDeck.length === 0) srDeck = shuffleArray([...vocabData]);
             srCurrentWord = srDeck.pop();
             
             const availableWrong = shuffleArray(vocabData.filter(v => v.word !== srCurrentWord.word));
@@ -1038,18 +1012,18 @@
             const container = document.getElementById('sr-options'); container.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "bg-zinc-800 text-zinc-200 border border-zinc-600 font-bold py-5 px-6 rounded-xl shadow-lg hover:bg-zinc-700 hover:text-white transition-all capitalize font-display tracking-widest text-2xl";
+                btn.className = "bg-slate-800 text-slate-200 border border-slate-600 font-bold py-4 px-6 rounded-xl shadow hover:bg-slate-700 hover:text-white transition-all capitalize font-display tracking-widest text-xl";
                 btn.textContent = opt.word;
                 btn.onclick = () => {
                     if(opt.word === srCurrentWord.word) {
                         score+=10; srTimeLeft = Math.min(60, srTimeLeft+2);
-                        btn.className = "bg-emerald-700 text-white font-bold py-5 px-6 rounded-xl shadow-lg capitalize font-display tracking-widest border border-emerald-500 text-2xl";
+                        btn.className = "bg-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow capitalize font-display tracking-widest border border-emerald-400 text-xl";
                         updateSrUI(); setTimeout(nextSrQuestion, 400);
                     } else {
                         score = Math.max(0, score-5); srTimeLeft = Math.max(0, srTimeLeft-3);
-                        btn.className = "bg-red-800 text-white font-bold py-5 px-6 rounded-xl shadow-lg capitalize animate-shake opacity-50 cursor-not-allowed font-display tracking-widest border border-red-600 text-2xl";
+                        btn.className = "bg-red-700 text-white font-bold py-4 px-6 rounded-xl shadow capitalize animate-shake opacity-50 cursor-not-allowed font-display tracking-widest border border-red-500 text-xl";
                         btn.disabled = true; updateSrUI();
-                        if(srTimeLeft<=0) endGame("Time's up! The kitchen is closed.");
+                        if(srTimeLeft<=0) endGame("Time's up! The deadline passed.");
                     }
                 };
                 container.appendChild(btn);
@@ -1057,7 +1031,7 @@
         }
 
         // ==========================================
-        // GAME 2: RECIPE SCRAMBLER (Hangman)
+        // GAME 2: THE CRYPTOGRAM (Hangman)
         // ==========================================
         let scWords = [], scCurrentIndex = 0, scTargetWord = '', scGuessedLetters = new Set(), scLives = 6;
         const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
@@ -1070,13 +1044,11 @@
         }
         function loadHangmanLevel() {
             if (scCurrentIndex >= scWords.length) { 
-                // Infinite loop fix: replenish and keep going if desired, or end. Let's just generate 5 new ones.
                 const uniqueSet = []; const seen = new Set();
                 for(let item of shuffleArray([...vocabData])) { if(!seen.has(item.word)){ seen.add(item.word); uniqueSet.push(item); } if(uniqueSet.length>=5) break; }
-                scWords = uniqueSet;
-                scCurrentIndex = 0;
+                scWords = uniqueSet; scCurrentIndex = 0;
             }
-            document.getElementById('sc-progress').textContent = `Dish ${scCurrentIndex + 1} of 5`;
+            document.getElementById('sc-progress').textContent = `Draft ${scCurrentIndex + 1} of 5`;
             document.getElementById('sc-score').textContent = `Score: ${score}`;
             const obj = scWords[scCurrentIndex]; scTargetWord = obj.word.toUpperCase(); scGuessedLetters.clear(); scLives = 6;
             document.getElementById('sc-definition').textContent = `"${obj.def}"`;
@@ -1086,7 +1058,7 @@
         function renderHangmanUI() {
             document.getElementById('sc-score').textContent = `Score: ${score}`;
             const livesDiv = document.getElementById('sc-lives-display'); livesDiv.innerHTML = '';
-            for(let i=0; i<6; i++) { livesDiv.innerHTML += `<span class="text-3xl ${i < scLives ? '' : 'opacity-20 grayscale'}">🔪</span>`; }
+            for(let i=0; i<6; i++) { livesDiv.innerHTML += `<span class="${i < scLives ? '' : 'opacity-20 grayscale'}">🖋️</span>`; }
             const slotsContainer = document.getElementById('sc-target-slots'); slotsContainer.innerHTML = '';
             let allRevealed = true;
             for (let char of scTargetWord) {
@@ -1100,7 +1072,7 @@
             ALPHABET.forEach(l => {
                 const btn = document.createElement('button');
                 const isGuessed = scGuessedLetters.has(l);
-                btn.className = `w-10 h-12 m-1 font-bold rounded text-xl transition-all font-display ${isGuessed ? (scTargetWord.includes(l)?'bg-amber-700 text-white opacity-50 cursor-not-allowed border border-amber-500':'bg-red-800 text-white opacity-50 cursor-not-allowed border border-red-600') : 'bg-zinc-700 text-zinc-200 hover:bg-zinc-600 active:scale-95 border border-zinc-500'}`;
+                btn.className = `w-10 h-12 m-1 font-bold rounded text-lg transition-all font-display ${isGuessed ? (scTargetWord.includes(l)?'bg-emerald-700 text-white opacity-50 cursor-not-allowed border border-emerald-500':'bg-red-800 text-white opacity-50 cursor-not-allowed border border-red-600') : 'bg-slate-700 text-amber-100 hover:bg-slate-600 active:scale-95 border border-slate-500'}`;
                 btn.textContent = l; btn.disabled = isGuessed || scLives<=0 || allRevealed;
                 if(!btn.disabled) btn.onclick = () => { 
                     scGuessedLetters.add(l); 
@@ -1125,12 +1097,12 @@
                 scLives--; score = Math.max(0, score - 10);
                 document.getElementById('sc-play-area').classList.add('animate-shake'); setTimeout(() => document.getElementById('sc-play-area').classList.remove('animate-shake'), 400);
                 renderHangmanUI();
-            } else if (scLives <= 1) { alert("You don't have enough tools to ask for a hint!"); }
+            } else if (scLives <= 1) { alert("You don't have enough ribbons to ask for a hint!"); }
         }
         function scramblerReveal() { scTargetWord.split('').forEach(c => scGuessedLetters.add(c)); score = Math.max(0, score - 25); renderHangmanUI(); }
 
         // ==========================================
-        // GAME 3: PANTRY MATCH (Memory Match)
+        // GAME 3: BINDING MATCH (Memory Match)
         // ==========================================
         let resFlipped = [], resMatches = 0;
         let resTimeLeft = 60, resInitial = 60, resIsRunning = false;
@@ -1143,16 +1115,16 @@
             
             const grid = document.getElementById('res-grid'); 
             grid.innerHTML = '';
-            grid.classList.add('opacity-50', 'pointer-events-none'); // Locked until start
+            grid.classList.add('opacity-50', 'pointer-events-none');
             
             shuffleArray([...memoryPairsData]).forEach((item, index) => {
                 const card = document.createElement('div');
                 card.className = "perspective-1000 w-full h-24 md:h-32 cursor-pointer";
                 card.innerHTML = `
                     <div class="relative w-full h-full transform-style-3d transition-transform duration-500" id="res-card-inner-${index}" data-id="${item.id}">
-                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-zinc-700 to-zinc-900 rounded-xl border-2 border-amber-500/50 shadow-lg flex items-center justify-center text-5xl">🥫</div>
-                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-cream-bg rounded-xl border-2 border-amber-600 shadow-lg flex items-center justify-center p-2 text-center">
-                            <span class="text-wine-red font-bold font-display ${item.text.length > 10 ? 'text-sm md:text-base' : 'text-lg md:text-xl'} uppercase tracking-wide">${item.text}</span>
+                        <div class="absolute w-full h-full backface-hidden bg-gradient-to-br from-slate-700 to-slate-900 rounded-xl border-2 border-amber-500/50 shadow-lg flex items-center justify-center text-4xl">📖</div>
+                        <div class="absolute w-full h-full backface-hidden rotate-y-180 bg-amber-50 rounded-xl border-2 border-amber-600 shadow-lg flex items-center justify-center p-2 text-center">
+                            <span class="text-slate-900 font-bold font-display ${item.text.length > 10 ? 'text-sm md:text-base' : 'text-lg md:text-xl'} uppercase tracking-wide">${item.text}</span>
                         </div>
                     </div>
                 `;
@@ -1179,7 +1151,7 @@
                     if(resTimeLeft <= 0) { 
                         clearInterval(globalTimerInterval); resIsRunning = false; 
                         document.getElementById('res-grid').classList.add('opacity-50', 'pointer-events-none');
-                        endGame("Time's Up! Pantry locked."); 
+                        endGame("Time's Up! The library closed."); 
                     }
                 }, 1000); 
             } 
@@ -1206,12 +1178,11 @@
                     resMatches++; document.getElementById('res-score').textContent = `Matches: ${resMatches} / 8`;
                     resFlipped.forEach(f => {
                         f.el.classList.add('matched');
-                        f.el.children[1].style.backgroundColor = '#dcfce7'; // emerald-50
-                        f.el.children[1].style.borderColor = '#10b981';
-                        f.el.children[1].querySelector('span').style.color = '#064e3b';
+                        f.el.children[1].classList.remove('bg-amber-50', 'border-amber-600');
+                        f.el.children[1].classList.add('bg-emerald-200', 'border-emerald-500', 'text-emerald-900');
                     });
                     resFlipped = [];
-                    if (resMatches === 8) setTimeout(() => { score=resTimeLeft*10; endGame("Pantry Organized!"); }, 1000);
+                    if (resMatches === 8) setTimeout(() => { score=resTimeLeft*10; endGame("Bindings Restored!"); }, 1000);
                 } else {
                     setTimeout(() => { resFlipped.forEach(f => f.el.classList.remove('rotate-y-180')); resFlipped = []; }, 1000);
                 }
@@ -1219,7 +1190,7 @@
         }
 
         // ==========================================
-        // GAME 4: PRESSURE COOKER (Bomb Game)
+        // GAME 4: DEADLINE DEFUSE
         // ==========================================
         let bombStage = 0, bombTimeLeft = 60, currentBombQ = null, bDeck = [];
         function initDefuse() {
@@ -1234,7 +1205,7 @@
                 document.getElementById('bomb-timer').textContent = Math.max(0, bombTimeLeft).toFixed(1);
                 if (bombTimeLeft <= 0) { 
                     clearInterval(globalTimerInterval); 
-                    endGame("BOOM! The pressure cooker exploded."); 
+                    endGame("BOOM! You missed the deadline."); 
                 }
             }, 100);
         }
@@ -1244,25 +1215,25 @@
             if (bombStage > 5) { 
                 clearInterval(globalTimerInterval); 
                 score += Math.floor(bombTimeLeft * 10); 
-                endGame("Pressure Relieved! Dinner is saved."); 
+                endGame("Crisis Averted! The book is published."); 
                 return; 
             }
             
-            document.getElementById('bomb-stage').textContent = `Ticket ${bombStage} of 5`;
+            document.getElementById('bomb-stage').textContent = `Deadline ${bombStage} of 5`;
             currentBombQ = bDeck.pop();
             
             const qArea = document.getElementById('bomb-question');
             qArea.classList.remove('animate-pop-in'); void qArea.offsetWidth; qArea.classList.add('animate-pop-in');
-            qArea.innerHTML = currentBombQ.q.replace('_____', '<span class="text-amber-400 font-bold border-b-2 border-amber-500 px-2">_____</span>');
+            qArea.innerHTML = currentBombQ.q.replace('____', '<span class="text-amber-400 font-bold border-b-2 border-amber-500 px-2">____</span>');
             
             const wires = shuffleArray([ {w: currentBombQ.a, c: true}, {w: currentBombQ.w1, c: false}, {w: currentBombQ.w2, c: false} ]);
-            const colors = shuffleArray(["bg-red-700 hover:bg-red-600", "bg-blue-700 hover:bg-blue-600", "bg-emerald-700 hover:bg-emerald-600"]);
+            const colors = shuffleArray(["bg-red-600 hover:bg-red-500", "bg-blue-600 hover:bg-blue-500", "bg-emerald-600 hover:bg-emerald-500"]);
             
             const container = document.getElementById('bomb-wires'); container.innerHTML = '';
             
             wires.forEach((wire, i) => {
                 const btn = document.createElement('button');
-                btn.className = `${colors[i]} text-white font-bold py-4 rounded-xl w-full transition border-b-4 border-black/30 active:border-b-0 active:translate-y-1 uppercase tracking-widest font-display text-xl`;
+                btn.className = `${colors[i]} text-white font-bold py-4 rounded-lg w-full transition border-b-4 border-black/30 active:border-b-0 active:translate-y-1 uppercase tracking-widest font-display text-lg`;
                 btn.textContent = wire.w;
                 btn.onclick = () => {
                     if(wire.c) { nextBombStage(); } 
@@ -1271,7 +1242,7 @@
                         document.getElementById('bomb-container').classList.add('animate-shake'); 
                         document.getElementById('bomb-timer').classList.add('text-amber-400');
                         setTimeout(() => { document.getElementById('bomb-container').classList.remove('animate-shake'); document.getElementById('bomb-timer').classList.remove('text-amber-400'); }, 500);
-                        if(bombTimeLeft <= 0) { clearInterval(globalTimerInterval); endGame("BOOM! Wrong ingredient."); }
+                        if(bombTimeLeft <= 0) { clearInterval(globalTimerInterval); endGame("BOOM! You missed the deadline."); }
                     }
                 };
                 container.appendChild(btn);
@@ -1279,7 +1250,7 @@
         }
 
         // ==========================================
-        // GAME 5: MENU MAKER (Sentence Clash)
+        // GAME 5: PLOT CLASH (Sentence)
         // ==========================================
         let team1Score = 0, team2Score = 0, snTimeLeft = 60, snInitial = 60, snIsRunning = false;
         function initSentenceGame() { team1Score=0; team2Score=0; updateScoreboard(); resetSnTimer(); showView('sentence'); nextSentenceWords(); }
@@ -1294,12 +1265,12 @@
             
             group.words.forEach((word, i) => {
                 container.innerHTML += `
-                    <div class="bg-gradient-to-br from-amber-600 to-amber-800 border border-amber-400 text-white px-8 py-5 rounded-xl shadow-xl transform transition hover:scale-105 cursor-default text-center min-w-[200px]">
+                    <div class="bg-gradient-to-br from-indigo-600 to-indigo-800 border border-indigo-400 text-white px-8 py-5 rounded-xl shadow-xl transform transition hover:scale-105 cursor-default text-center min-w-[200px]">
                         <span class="text-3xl font-black tracking-widest uppercase font-display">${word}</span>
                     </div>
                 `;
                 if(i < group.words.length - 1) {
-                    container.innerHTML += `<div class="text-5xl text-zinc-500 font-black">+</div>`;
+                    container.innerHTML += `<div class="text-4xl text-slate-500 font-black">+</div>`;
                 }
             });
             document.getElementById('sn-example-text').textContent = `"${group.example}"`;
@@ -1321,7 +1292,7 @@
         function resetSnTimer() { snIsRunning=false; clearInterval(globalTimerInterval); snTimeLeft=snInitial; const d=document.getElementById('sn-timer-display'); d.classList.remove('animate-shake','text-red-500'); d.classList.add('text-white'); updateSnTimerDisplay(); }
 
         // ==========================================
-        // GAME 6: CULINARY JEOPARDY
+        // GAME 6: LITERARY JEOPARDY
         // ==========================================
         let jeopScoreA = 0, jeopScoreB = 0, currentJeopValue = 0, currentJeopCell = null;
         let jeopTimeLeft = 30, jeopGlobalTime = 30, jeopIsRunning = false, jeopTimerInterval;
@@ -1337,13 +1308,13 @@
                 btn.textContent = 'Risky Mode';
                 btn.className = 'bg-red-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-red-500 animate-pulse';
                 desc.textContent = 'Wrong answers deduct points!';
-                desc.classList.replace('text-zinc-500', 'text-red-400');
+                desc.classList.replace('text-slate-400', 'text-red-400');
                 riskyBtns.forEach(b => b.classList.remove('hidden'));
             } else {
                 btn.textContent = 'Normal (Safe)';
                 btn.className = 'bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-emerald-500';
                 desc.textContent = 'Wrong answers do not lose points.';
-                desc.classList.replace('text-red-400', 'text-zinc-500');
+                desc.classList.replace('text-red-400', 'text-slate-400');
                 riskyBtns.forEach(b => b.classList.add('hidden'));
             }
         }
@@ -1357,12 +1328,11 @@
             jeopScoreA = 0; jeopScoreB = 0; document.getElementById('jeop-score-a').textContent = 0; document.getElementById('jeop-score-b').textContent = 0;
             const board = document.getElementById('jeopardy-board'); board.innerHTML = '';
             
-            // STRICT 5 COLUMNS
             board.className = "min-w-[800px] grid grid-cols-5 gap-2";
             
             jeopardyCategories.forEach(cat => {
                 const header = document.createElement('div');
-                header.className = "bg-wine-red text-amber-400 font-display text-lg md:text-xl text-center py-4 px-2 uppercase shadow-inner border-b-4 border-red-950 leading-tight flex items-center justify-center h-20 tracking-wider";
+                header.className = "bg-indigo-900 text-amber-400 font-display text-sm md:text-base text-center py-4 px-2 uppercase shadow-inner border-b-4 border-indigo-950 leading-tight flex items-center justify-center h-20 tracking-wider";
                 header.textContent = cat.name;
                 board.appendChild(header);
             });
@@ -1370,7 +1340,7 @@
                 jeopardyCategories.forEach((cat) => {
                     const val = (row+1)*100;
                     const cell = document.createElement('div');
-                    cell.className = "bg-zinc-800 hover:bg-zinc-700 text-amber-500 font-display text-4xl text-center py-6 cursor-pointer border-b-4 border-zinc-950 transition active:translate-y-1 active:border-b-0";
+                    cell.className = "bg-slate-800 hover:bg-slate-700 text-amber-500 font-display text-3xl md:text-4xl text-center py-6 cursor-pointer border-b-4 border-slate-900 transition active:translate-y-1 active:border-b-0";
                     cell.textContent = val;
                     cell.onclick = () => openJeopardyQ(cat.name, cat.questions[row], val, cell);
                     board.appendChild(cell);
@@ -1379,12 +1349,11 @@
             showView('jeopardy');
         }
 
-        // Timer Logic for Jeopardy Modal
         function updateJeopTimerDisplay() {
             const d = document.getElementById('jeop-timer-display');
             d.innerText = jeopTimeLeft;
-            if(jeopTimeLeft <= 10 && jeopTimeLeft > 0) d.classList.add('text-red-500', 'animate-pulse');
-            else d.classList.remove('text-red-500', 'animate-pulse');
+            if(jeopTimeLeft <= 10 && jeopTimeLeft > 0) d.classList.add('text-rose-500', 'animate-pulse');
+            else d.classList.remove('text-rose-500', 'animate-pulse');
         }
 
         function startJeopTimer() {
@@ -1403,12 +1372,9 @@
         
         function pauseJeopTimer() { 
             if (jeopIsRunning) {
-                jeopIsRunning = false; 
-                clearInterval(jeopTimerInterval); 
+                jeopIsRunning = false; clearInterval(jeopTimerInterval); 
                 document.getElementById('jeop-pause-btn').textContent = "Resume";
-            } else {
-                startJeopTimer();
-            }
+            } else { startJeopTimer(); }
         }
 
         function openJeopardyQ(catName, qObj, val, cellElement) {
@@ -1422,7 +1388,6 @@
             document.getElementById('jeop-reveal-btn').classList.remove('hidden');
             document.getElementById('jeop-modal').classList.remove('hidden');
             
-            // Auto-start the timer based on global clock settings
             jeopTimeLeft = jeopGlobalTime;
             updateJeopTimerDisplay();
             startJeopTimer();
@@ -1431,7 +1396,7 @@
         function cancelJeopardy() {
             clearInterval(jeopTimerInterval); jeopIsRunning = false;
             currentJeopCell.classList.remove('opacity-0', 'cursor-default'); 
-            currentJeopCell.classList.add('hover:bg-zinc-700', 'active:translate-y-1');
+            currentJeopCell.classList.add('hover:bg-slate-700', 'active:translate-y-1');
             document.getElementById('jeop-modal').classList.add('hidden');
         }
 
@@ -1443,32 +1408,26 @@
             if(team===1) { jeopScoreA += points; document.getElementById('jeop-score-a').textContent = jeopScoreA; }
             if(team===2) { jeopScoreB += points; document.getElementById('jeop-score-b').textContent = jeopScoreB; }
             
-            // If they got it wrong (deducted points), leave the modal open so the other team can try!
-            if (!isPositive && team !== 0) {
-                return;
-            }
+            if (!isPositive && team !== 0) return;
             
-            currentJeopCell.classList.add('opacity-0', 'cursor-default'); currentJeopCell.classList.remove('hover:bg-zinc-700', 'active:translate-y-1');
+            currentJeopCell.classList.add('opacity-0', 'cursor-default'); currentJeopCell.classList.remove('hover:bg-slate-700', 'active:translate-y-1');
             document.getElementById('jeop-modal').classList.add('hidden');
             
             const allCells = document.getElementById('jeopardy-board').children;
             let finished = true;
             for(let i=5; i<allCells.length; i++) { if(!allCells[i].classList.contains('opacity-0')) finished = false; }
-            if(finished) { score = Math.max(jeopScoreA, jeopScoreB); setTimeout(()=>endGame(`Service Closed! Team A: ${jeopScoreA} | Team B: ${jeopScoreB}`), 1000); }
+            if(finished) { score = Math.max(jeopScoreA, jeopScoreB); setTimeout(()=>endGame(`Seminar Closed! Team A: ${jeopScoreA} | Team B: ${jeopScoreB}`), 1000); }
         }
 
         // ==========================================
-        // GAME 7: MASTER CHEF TRIVIA (Millionaire)
+        // GAME 7: BESTSELLER TRIVIA (Millionaire)
         // ==========================================
         let milDeck = [], milLevel = 0;
         const prizeLadder = [100, 500, 1000, 5000, 10000, 50000, 100000, 250000, 500000, 1000000];
         let currentMilQ = null;
-        
-        // Timer Variables
         let milTimerInterval;
         let milTimeLeft = 15;
 
-        // Sound Effects
         const sndCorrect = new Audio('https://www.myinstants.com/media/sounds/extremely-loud-correct-buzzer.mp3');
         const sndIncorrect = new Audio('https://www.myinstants.com/media/sounds/extremely-loud-incorrect-buzzer.mp3');
 
@@ -1478,16 +1437,15 @@
             
             clearInterval(milTimerInterval);
             
-            // Reset Lifelines
             const btn5050 = document.getElementById('btn-5050');
             btn5050.disabled = false;
-            btn5050.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-zinc-700', 'border-zinc-500');
+            btn5050.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-slate-700', 'border-slate-500');
             btn5050.classList.add('bg-amber-600', 'hover:bg-amber-500', 'border-amber-300');
 
             const btnAudience = document.getElementById('btn-audience');
             btnAudience.disabled = false;
-            btnAudience.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-zinc-700', 'border-zinc-500');
-            btnAudience.classList.add('bg-blue-600', 'hover:bg-blue-500', 'border-blue-300');
+            btnAudience.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-slate-700', 'border-slate-500');
+            btnAudience.classList.add('bg-indigo-600', 'hover:bg-indigo-500', 'border-indigo-300');
             
             document.getElementById('mil-audience-poll').classList.add('hidden');
 
@@ -1514,25 +1472,24 @@
             
             if (milLevel >= 10) {
                 score = 1000000;
-                endGame("You are a 3-Star Michelin Chef! You won $1,000,000!");
+                endGame("You are a #1 Bestselling Author! You won 1,000,000 Sales!");
                 return;
             }
             updateLadderUI();
             currentMilQ = milDeck[milLevel];
             
-            // 15 Second Timer Logic (Only for first 4 questions / Levels 0 to 3)
             const timerDisplay = document.getElementById('mil-timer-display');
             if (milLevel < 4) {
                 timerDisplay.classList.remove('hidden');
                 milTimeLeft = 15;
                 timerDisplay.textContent = milTimeLeft;
-                timerDisplay.classList.remove('text-red-600', 'animate-pulse');
+                timerDisplay.classList.remove('text-rose-600', 'animate-pulse');
                 
                 milTimerInterval = setInterval(() => {
                     milTimeLeft--;
                     timerDisplay.textContent = milTimeLeft;
                     if (milTimeLeft <= 5) {
-                        timerDisplay.classList.add('text-red-600', 'animate-pulse');
+                        timerDisplay.classList.add('text-rose-600', 'animate-pulse');
                     }
                     if (milTimeLeft <= 0) {
                         clearInterval(milTimerInterval);
@@ -1553,24 +1510,23 @@
             const letters = ['A', 'B', 'C', 'D'];
             currentMilQ.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "mil-opt-btn bg-zinc-800 hover:bg-zinc-700 border-2 border-amber-600/50 text-white font-bold py-5 px-6 rounded-xl transition text-left flex gap-4 text-xl shadow-[0_4px_0_#92400e] active:translate-y-1 active:shadow-none font-display";
+                btn.className = "mil-opt-btn bg-slate-800 hover:bg-slate-700 border-2 border-amber-600/50 text-white font-bold py-5 px-6 rounded-xl transition text-left flex gap-4 text-xl shadow-[0_4px_0_#92400e] active:translate-y-1 active:shadow-none font-display";
                 btn.innerHTML = `<span class="text-amber-400 w-6">${letters[idx]}:</span> <span class="flex-grow">${opt}</span>`;
                 btn.onclick = () => checkMilAnswer(idx, btn);
                 container.appendChild(btn);
             });
         }
 
-        // Handles logic if timer runs out
         function handleMilTimeout() {
             const container = document.getElementById('mil-options');
             Array.from(container.children).forEach(b => b.disabled = true);
-            sndIncorrect.play().catch(e => console.log("Audio blocked by browser"));
+            sndIncorrect.play().catch(e => console.log("Audio blocked"));
             
-            Array.from(container.children)[currentMilQ.ans].classList.replace('bg-zinc-800', 'bg-emerald-600');
+            Array.from(container.children)[currentMilQ.ans].classList.replace('bg-slate-800', 'bg-emerald-600');
             
             const winnings = milLevel > 0 ? prizeLadder[milLevel - 1] : 0;
             score = winnings;
-            setTimeout(() => endGame(`Time's Up! You walk away with $${winnings.toLocaleString()}.`), 2500);
+            setTimeout(() => endGame(`Missed Deadline! You walk away with ${winnings.toLocaleString()} sales.`), 2500);
         }
 
         function use5050() {
@@ -1579,7 +1535,7 @@
             
             btn5050.disabled = true;
             btn5050.classList.remove('bg-amber-600', 'hover:bg-amber-500', 'border-amber-300');
-            btn5050.classList.add('bg-zinc-700', 'border-zinc-500', 'opacity-50', 'cursor-not-allowed');
+            btn5050.classList.add('bg-slate-700', 'border-slate-500', 'opacity-50', 'cursor-not-allowed');
 
             const container = document.getElementById('mil-options');
             let wrongIndices = [0, 1, 2, 3].filter(i => i !== currentMilQ.ans);
@@ -1597,22 +1553,21 @@
             if (btnAudience.disabled) return;
             
             btnAudience.disabled = true;
-            btnAudience.classList.remove('bg-blue-600', 'hover:bg-blue-500', 'border-blue-300');
-            btnAudience.classList.add('bg-zinc-700', 'border-zinc-500', 'opacity-50', 'cursor-not-allowed');
+            btnAudience.classList.remove('bg-indigo-600', 'hover:bg-indigo-500', 'border-indigo-300');
+            btnAudience.classList.add('bg-slate-700', 'border-slate-500', 'opacity-50', 'cursor-not-allowed');
 
             const pollDiv = document.getElementById('mil-audience-poll');
             pollDiv.classList.remove('hidden');
-            pollDiv.innerHTML = '<span class="animate-pulse">The audience is voting...</span>';
+            pollDiv.innerHTML = '<span class="animate-pulse">Surveying test readers...</span>';
 
             setTimeout(() => {
                 let percentages = [0, 0, 0, 0];
-                const correctBoost = Math.floor(Math.random() * 20) + 55; // 55% to 75% accuracy
+                const correctBoost = Math.floor(Math.random() * 20) + 55; 
                 percentages[currentMilQ.ans] = correctBoost;
                 
                 let remaining = 100 - correctBoost;
                 const container = document.getElementById('mil-options');
                 
-                // Distribute remaining points only to visible options
                 let visibleIndices = [];
                 Array.from(container.children).forEach((btn, idx) => {
                     if (idx !== currentMilQ.ans && btn.style.visibility !== 'hidden') {
@@ -1629,7 +1584,7 @@
                     percentages[visibleIndices[visibleIndices.length - 1]] = remaining;
                 }
 
-                let resultHTML = '<strong class="text-blue-300 uppercase tracking-widest block mb-3 border-b border-blue-500/50 pb-1">Audience Poll Results:</strong>';
+                let resultHTML = '<strong class="text-indigo-300 uppercase tracking-widest block mb-3 border-b border-indigo-500/50 pb-1">Reader Poll Results:</strong>';
                 const letters = ['A', 'B', 'C', 'D'];
                 currentMilQ.options.forEach((opt, idx) => {
                     if (container.children[idx].style.visibility !== 'hidden') {
@@ -1646,32 +1601,32 @@
             const container = document.getElementById('mil-options');
             Array.from(container.children).forEach(b => b.disabled = true);
 
-            btnElement.classList.replace('bg-zinc-800', 'bg-amber-500');
-            btnElement.classList.replace('hover:bg-zinc-700', 'bg-amber-500');
+            btnElement.classList.replace('bg-slate-800', 'bg-amber-500');
+            btnElement.classList.replace('hover:bg-slate-700', 'bg-amber-500');
 
             setTimeout(() => {
                 if (selectedIndex === currentMilQ.ans) {
-                    sndCorrect.play().catch(e => console.log("Audio blocked by browser"));
+                    sndCorrect.play().catch(e => console.log("Audio blocked"));
                     btnElement.classList.replace('bg-amber-500', 'bg-emerald-600');
                     setTimeout(() => {
                         milLevel++;
                         loadMilQuestion();
                     }, 1500);
                 } else {
-                    sndIncorrect.play().catch(e => console.log("Audio blocked by browser"));
-                    btnElement.classList.replace('bg-amber-500', 'bg-red-600');
+                    sndIncorrect.play().catch(e => console.log("Audio blocked"));
+                    btnElement.classList.replace('bg-amber-500', 'bg-rose-600');
                     btnElement.classList.add('animate-shake');
-                    Array.from(container.children)[currentMilQ.ans].classList.replace('bg-zinc-800', 'bg-emerald-600');
+                    Array.from(container.children)[currentMilQ.ans].classList.replace('bg-slate-800', 'bg-emerald-600');
                     
                     const winnings = milLevel > 0 ? prizeLadder[milLevel - 1] : 0;
                     score = winnings;
-                    setTimeout(() => endGame(`Fired! You walk away with $${winnings.toLocaleString()}.`), 2500);
+                    setTimeout(() => endGame(`Bad Reviews! You walk away with ${winnings.toLocaleString()} sales.`), 2500);
                 }
             }, 1500);
         }
 
         // ==========================================
-        // GAME 8: KITCHEN CHAOS (Baamboozle)
+        // GAME 8: WRITER'S BLOCK (Baamboozle)
         // ==========================================
         let bbzScoreA = 0, bbzScoreB = 0, currentBbzCell = null, currentBbzData = null;
 
@@ -1686,7 +1641,7 @@
 
             shuffledDeck.forEach((item, index) => {
                 const cell = document.createElement('div');
-                cell.className = "bg-amber-700 hover:bg-amber-600 text-white font-display text-5xl text-center py-6 cursor-pointer border-b-4 border-amber-900 transition active:translate-y-1 active:border-b-0 rounded-xl shadow-lg";
+                cell.className = "bg-indigo-900 hover:bg-indigo-800 text-white font-display text-5xl text-center py-6 cursor-pointer border-b-4 border-indigo-950 transition active:translate-y-1 active:border-b-0 rounded-xl shadow-lg";
                 cell.textContent = index + 1;
                 cell.onclick = () => openBbzTile(item, cell);
                 board.appendChild(cell);
@@ -1751,40 +1706,28 @@
 
         function closeBbzModal() {
             currentBbzCell.classList.add('opacity-0', 'cursor-default');
-            currentBbzCell.classList.remove('hover:bg-amber-600', 'active:translate-y-1');
+            currentBbzCell.classList.remove('hover:bg-indigo-800', 'active:translate-y-1');
             document.getElementById('bbz-modal').classList.add('hidden');
             checkBbzEnd();
         }
 
-        function cancelBbz() {
-            document.getElementById('bbz-modal').classList.add('hidden');
-        }
-
-        function updateBbzScores() {
-            document.getElementById('bbz-score-a').textContent = bbzScoreA;
-            document.getElementById('bbz-score-b').textContent = bbzScoreB;
-        }
-
+        function cancelBbz() { document.getElementById('bbz-modal').classList.add('hidden'); }
+        function updateBbzScores() { document.getElementById('bbz-score-a').textContent = bbzScoreA; document.getElementById('bbz-score-b').textContent = bbzScoreB; }
         function checkBbzEnd() {
             const allCells = document.getElementById('bbz-board').children;
             let finished = true;
-            for(let i=0; i<allCells.length; i++) {
-                if(!allCells[i].classList.contains('opacity-0')) finished = false;
-            }
-            if(finished) {
-                score = Math.max(bbzScoreA, bbzScoreB);
-                setTimeout(()=>endGame(`Service Ended! Team A: ${bbzScoreA} | Team B: ${bbzScoreB}`), 1000);
-            }
+            for(let i=0; i<allCells.length; i++) { if(!allCells[i].classList.contains('opacity-0')) finished = false; }
+            if(finished) { score = Math.max(bbzScoreA, bbzScoreB); setTimeout(()=>endGame(`Publishing Complete! Team A: ${bbzScoreA} | Team B: ${bbzScoreB}`), 1000); }
         }
 
         // ==========================================
-        // GAME 9: GASTRONOMY TYCOON
+        // GAME 9: PUBLISHING TYCOON (TRUE MONOPOLY)
         // ==========================================
         let tycPlayers = [
             { pos: 0, money: 1000, tokenObj: null },
             { pos: 0, money: 1000, tokenObj: null }
         ];
-        let tycTurn = 0; // 0 for A, 1 for B
+        let tycTurn = 0; 
         let tycDeckQ = [];
         let tycDeckC = [];
 
@@ -1794,14 +1737,13 @@
             tycDeckQ = shuffleArray([...tycoonQuiz]);
             tycDeckC = shuffleArray([...tycoonChance]);
             
+            // Reset property ownership
+            tycoonSpaces.forEach(sp => { if (sp.type === 'prop') sp.owner = null; });
+            
             updateTycoonUI();
             
-            // Generate Board
             const grid = document.getElementById('tycoon-board-grid');
-            // Remove old spaces if re-init
-            Array.from(grid.children).forEach(child => {
-                if(child.classList.contains('tycoon-space')) child.remove();
-            });
+            Array.from(grid.children).forEach(child => { if(child.classList.contains('tycoon-space')) child.remove(); });
 
             tycoonSpaces.forEach(sp => {
                 const div = document.createElement('div');
@@ -1812,12 +1754,12 @@
                 
                 if (sp.type === 'corner' || sp.type === 'bonus') div.classList.add('tycoon-corner');
                 else if (sp.type === 'penalty' || sp.type === 'tax') {
-                    div.classList.add('bg-zinc-800', 'text-white');
-                    div.style.borderColor = '#52525b';
+                    div.classList.add('bg-slate-800', 'text-white');
+                    div.style.borderColor = '#475569';
                 }
                 
                 let headerColor = sp.color ? `background-color: ${sp.color};` : '';
-                let headerHTML = sp.type === 'prop' ? `<div class="w-full h-3 rounded-t-sm mb-1 absolute top-0 left-0" style="${headerColor}"></div>` : '';
+                let headerHTML = sp.type === 'prop' ? `<div class="w-full h-3 rounded-t-sm mb-1 absolute top-0 left-0 opacity-50" style="${headerColor}"></div>` : '';
 
                 div.innerHTML = `
                     ${headerHTML}
@@ -1829,7 +1771,6 @@
 
             showView('tycoon');
             
-            // Initial token placement
             setTimeout(() => {
                 moveTokenVisually(0, 0);
                 moveTokenVisually(1, 0);
@@ -1854,6 +1795,33 @@
                 document.getElementById('tyc-turn-indicator').textContent = "Team B's Turn";
                 document.getElementById('tyc-turn-indicator').className = "text-2xl font-display text-rose-400 mb-2 tracking-widest uppercase";
             }
+
+            // Visual Update for Owned Properties
+            tycoonSpaces.forEach(sp => {
+                if(sp.type === 'prop' && sp.owner !== null) {
+                    const el = document.getElementById(`tyc-space-${sp.id}`);
+                    const ownerBannerId = `owner-banner-${sp.id}`;
+                    let banner = document.getElementById(ownerBannerId);
+                    
+                    if (!banner) {
+                        banner = document.createElement('div');
+                        banner.id = ownerBannerId;
+                        el.appendChild(banner);
+                    }
+
+                    if(sp.owner === 0) {
+                        el.style.borderColor = '#3b82f6';
+                        el.style.borderWidth = '3px';
+                        banner.textContent = "TEAM A";
+                        banner.className = "absolute -top-3 left-1/2 transform -translate-x-1/2 text-[9px] font-bold px-2 py-0.5 rounded-sm text-white shadow-md z-10 bg-blue-600 animate-pop-in whitespace-nowrap";
+                    } else if (sp.owner === 1) {
+                        el.style.borderColor = '#f43f5e';
+                        el.style.borderWidth = '3px';
+                        banner.textContent = "TEAM B";
+                        banner.className = "absolute -top-3 left-1/2 transform -translate-x-1/2 text-[9px] font-bold px-2 py-0.5 rounded-sm text-white shadow-md z-10 bg-rose-600 animate-pop-in whitespace-nowrap";
+                    }
+                }
+            });
         }
 
         function rollTycoonDice() {
@@ -1872,7 +1840,7 @@
             setTimeout(() => {
                 clearInterval(shuffleInt);
                 display.classList.remove('dice-roll-anim');
-                roll = Math.floor(Math.random() * 4) + 1; // 1 to 4 for faster board traversal
+                roll = Math.floor(Math.random() * 4) + 1; 
                 display.textContent = roll;
                 document.getElementById('tyc-status-text').textContent = `Rolled a ${roll}! moving...`;
                 
@@ -1891,7 +1859,6 @@
             let x = rect.left - boardRect.left + (rect.width / 2) - 15;
             let y = rect.top - boardRect.top + (rect.height / 2) - 15;
             
-            // Offset tokens slightly so they don't overlap perfectly
             if (playerIdx === 0) { x -= 10; y -= 10; }
             else { x += 10; y += 10; }
 
@@ -1902,10 +1869,9 @@
             let p = tycPlayers[tycTurn];
             let targetPos = (p.pos + roll) % 16;
             
-            // Pass Go logic
             if (p.pos + roll >= 16) {
                 p.money += 200;
-                document.getElementById('tyc-status-text').textContent = `Passed START! Collected $200.`;
+                document.getElementById('tyc-status-text').textContent = `Passed START! Collected $200 Salary.`;
                 updateTycoonUI();
             }
 
@@ -1921,28 +1887,42 @@
             const space = tycoonSpaces[spaceId];
             
             if (space.type === 'prop') {
-                showTycoonQuizModal(space);
+                if (space.owner === null) {
+                    if (tycPlayers[tycTurn].money >= 100) {
+                        showTycoonQuizModal(space, spaceId);
+                    } else {
+                        showTycoonNotice("Insufficient Funds", "You need $100 to attempt acquiring this office. You just browse through.", 0);
+                    }
+                } else if (space.owner === tycTurn) {
+                    showTycoonNotice("Your Office", "You already own " + space.name + ". Enjoy a quick coffee break.", 0);
+                } else {
+                    // Pay Rent to Opponent
+                    tycPlayers[tycTurn].money -= 100;
+                    tycPlayers[space.owner].money += 100;
+                    let ownerName = space.owner === 0 ? "Team A" : "Team B";
+                    showTycoonNotice("Royalties Due!", `This office belongs to ${ownerName}. You paid them $100 in royalties.`, 0);
+                }
             } else if (space.type === 'chance') {
                 showTycoonChanceModal();
             } else if (space.type === 'tax') {
-                showTycoonNotice("Expenses Due", "You must pay for high-quality ingredients and staff wages. Lose $100.", -100);
+                showTycoonNotice("Editing Fees Due", "You must pay for proofreading and cover design. Lose $100.", -100);
             } else if (space.type === 'penalty') {
-                showTycoonNotice("Health Code Violation!", "The inspector found issues in your kitchen. Pay a $150 fine.", -150);
+                if(spaceId === 4) showTycoonNotice("Plagiarism Fine!", "You stole a chapter from another book! Pay a $150 fine.", -150);
+                else showTycoonNotice("Writer's Block!", "You can't think of an ending. Pay $150 for a writing retreat.", -150);
             } else if (space.type === 'bonus') {
-                showTycoonNotice("The Grand Feast!", "You hosted a massive banquet. Collect a $200 bonus!", 200);
+                showTycoonNotice("NYT Bestseller!", "Your new novel hit number one! Collect a $200 bonus!", 200);
             } else if (space.type === 'corner' && spaceId === 0) {
-                // Landed exactly on start
-                showTycoonNotice("Start of Shift", "You landed exactly on START. Collect an extra $100 bonus!", 100);
+                showTycoonNotice("Start of Project", "You landed exactly on START. Collect an extra $100 advance!", 100);
             }
         }
 
-        function showTycoonQuizModal(space) {
+        function showTycoonQuizModal(space, spaceId) {
             if (tycDeckQ.length === 0) tycDeckQ = shuffleArray([...tycoonQuiz]);
             const q = tycDeckQ.pop();
             
-            document.getElementById('tyc-modal-header').textContent = `Property Action: ${space.name}`;
-            document.getElementById('tyc-modal-title').textContent = "Trivia Challenge";
-            document.getElementById('tyc-modal-desc').textContent = q.q;
+            document.getElementById('tyc-modal-header').textContent = `Acquisition Opportunity: ${space.name}`;
+            document.getElementById('tyc-modal-title').textContent = "Editorial Challenge";
+            document.getElementById('tyc-modal-desc').textContent = `Answer correctly to claim this office for $100. If you get it wrong, you lose $50!\n\n"${q.q}"`;
             
             const optArea = document.getElementById('tyc-options-area');
             optArea.innerHTML = '';
@@ -1953,28 +1933,33 @@
                 const btn = document.createElement('button');
                 btn.className = "bg-slate-800 hover:bg-slate-700 text-white font-bold py-4 px-6 rounded-xl border border-slate-600 transition text-lg shadow-md";
                 btn.textContent = optText;
-                btn.onclick = () => handleTycoonQuizAnswer(index === q.a, btn, optArea);
+                btn.onclick = () => handleTycoonQuizAnswer(index === q.a, btn, optArea, spaceId);
                 optArea.appendChild(btn);
             });
             
             document.getElementById('tyc-modal').classList.remove('hidden');
         }
 
-        function handleTycoonQuizAnswer(isCorrect, btnElement, container) {
+        function handleTycoonQuizAnswer(isCorrect, btnElement, container, spaceId) {
             Array.from(container.children).forEach(b => b.disabled = true);
             
             if(isCorrect) {
                 btnElement.classList.replace('bg-slate-800', 'bg-emerald-600');
                 btnElement.classList.replace('border-slate-600', 'border-emerald-400');
-                tycPlayers[tycTurn].money += 200;
-                document.getElementById('tyc-modal-title').textContent = "Success!";
-                document.getElementById('tyc-modal-desc').textContent = "You successfully managed the property and earned $200!";
+                
+                tycPlayers[tycTurn].money -= 100;
+                tycoonSpaces[spaceId].owner = tycTurn;
+                
+                let teamColor = tycTurn === 0 ? "text-blue-400" : "text-rose-400";
+                document.getElementById('tyc-modal-title').innerHTML = `<span class="${teamColor}">Office Acquired!</span>`;
+                document.getElementById('tyc-modal-desc').textContent = `Brilliant! You paid $100 and successfully acquired ${tycoonSpaces[spaceId].name}. Rivals will now pay you $100 when they land here!`;
             } else {
-                btnElement.classList.replace('bg-slate-800', 'bg-red-600');
+                btnElement.classList.replace('bg-slate-800', 'bg-rose-600');
                 btnElement.classList.add('animate-shake');
+                
                 tycPlayers[tycTurn].money -= 50;
-                document.getElementById('tyc-modal-title').textContent = "Mistake!";
-                document.getElementById('tyc-modal-desc').textContent = "Incorrect culinary knowledge. You lost $50 in wasted ingredients.";
+                document.getElementById('tyc-modal-title').textContent = "Rejected!";
+                document.getElementById('tyc-modal-desc').textContent = "Incorrect literary knowledge! You lost $50 in wasted paper and the office remains unowned.";
             }
             
             updateTycoonUI();
@@ -1983,18 +1968,17 @@
             setTimeout(() => {
                 container.classList.add('hidden');
                 document.getElementById('tyc-action-area').classList.remove('hidden');
-            }, 1000);
+            }, 1500); 
         }
 
         function showTycoonChanceModal() {
             if (tycDeckC.length === 0) tycDeckC = shuffleArray([...tycoonChance]);
             const card = tycDeckC.pop();
-            
             showTycoonNotice(card.title, card.desc, card.change);
         }
 
         function showTycoonNotice(title, desc, moneyChange) {
-            document.getElementById('tyc-modal-header').textContent = "Event Update";
+            document.getElementById('tyc-modal-header').textContent = "Plot Twist!";
             document.getElementById('tyc-modal-title').textContent = title;
             document.getElementById('tyc-modal-desc').textContent = desc;
             
@@ -2011,17 +1995,16 @@
         function checkBankruptcy() {
             if (tycPlayers[0].money < 0) {
                 score = tycPlayers[1].money;
-                setTimeout(() => endGame("Bankrupt! Team B Wins!"), 1500);
+                setTimeout(() => endGame("Cancelled! Team B bankrupts Team A!"), 2000);
             } else if (tycPlayers[1].money < 0) {
                 score = tycPlayers[0].money;
-                setTimeout(() => endGame("Bankrupt! Team A Wins!"), 1500);
+                setTimeout(() => endGame("Cancelled! Team A bankrupts Team B!"), 2000);
             }
         }
 
         function closeTycoonModal() {
             document.getElementById('tyc-modal').classList.add('hidden');
             
-            // End turn sequence
             tycTurn = tycTurn === 0 ? 1 : 0;
             updateTycoonUI();
             
