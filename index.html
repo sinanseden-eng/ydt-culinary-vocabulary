@@ -396,6 +396,24 @@
                     </div>
                 </div>
 
+                <!-- NEW: Settings Bar for Risky Mode and Global Timer -->
+                <div class="bg-zinc-900/80 p-4 rounded-xl border border-zinc-700 shadow-md flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <!-- Mode Selector -->
+                    <div class="flex items-center gap-4">
+                        <span class="text-zinc-400 text-sm font-bold uppercase tracking-widest">Game Mode:</span>
+                        <button id="jeop-mode-btn" onclick="toggleJeopMode()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-emerald-500">Normal (Safe)</button>
+                        <span id="jeop-mode-desc" class="text-xs text-zinc-500 italic hidden md:inline">Wrong answers do not lose points.</span>
+                    </div>
+                    
+                    <!-- Adjustable Global Timer -->
+                    <div class="flex items-center gap-3 bg-black/40 p-2 rounded-lg border border-zinc-600">
+                        <span class="text-zinc-400 text-xs font-bold uppercase tracking-widest mr-2">Base Timer:</span>
+                        <button onclick="adjustJeopGlobalTimer(-5)" class="text-amber-500 hover:text-amber-300 font-bold px-2 text-lg">-5s</button>
+                        <span id="jeop-global-time-display" class="text-2xl font-mono text-white font-bold w-12 text-center">30</span>
+                        <button onclick="adjustJeopGlobalTimer(5)" class="text-amber-500 hover:text-amber-300 font-bold px-2 text-lg">+5s</button>
+                    </div>
+                </div>
+
                 <div class="bg-zinc-900 p-3 rounded-xl border-2 border-zinc-700 shadow-2xl overflow-x-auto">
                     <div id="jeopardy-board">
                         <!-- Headers & Cells injected by JS as a strict 5-col grid -->
@@ -409,14 +427,12 @@
                         <div class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-zinc-700 pb-6 gap-4">
                             <h3 id="jeop-cat-val" class="text-amber-400 font-display text-3xl uppercase tracking-widest"></h3>
                             
-                            <!-- Adjustable Question Timer -->
+                            <!-- Live Question Timer -->
                             <div class="flex items-center gap-3 bg-black/60 p-3 rounded-xl border border-zinc-600">
-                                <button onclick="adjustJeopTimer(-5)" class="text-zinc-400 hover:text-white font-bold px-2 transition text-lg">-5s</button>
+                                <span class="text-zinc-400 text-xs font-bold uppercase tracking-widest">Time:</span>
                                 <span id="jeop-timer-display" class="text-4xl font-mono text-red-400 font-bold w-20 text-center drop-shadow-md">30</span>
-                                <button onclick="adjustJeopTimer(5)" class="text-zinc-400 hover:text-white font-bold px-2 transition text-lg">+5s</button>
                                 <div class="border-l border-zinc-600 pl-4 flex gap-2">
-                                    <button onclick="startJeopTimer()" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded text-sm font-bold transition">Start</button>
-                                    <button onclick="pauseJeopTimer()" class="bg-zinc-600 hover:bg-zinc-500 text-white px-4 py-2 rounded text-sm font-bold transition">Pause</button>
+                                    <button onclick="pauseJeopTimer()" id="jeop-pause-btn" class="bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded text-sm font-bold transition">Pause</button>
                                 </div>
                             </div>
                         </div>
@@ -428,10 +444,20 @@
                             <p id="jeop-a-text" class="text-white text-3xl mb-12 font-medium"></p>
                             
                             <p class="text-zinc-400 text-xs font-bold uppercase mb-4 tracking-widest">Award Points To:</p>
-                            <div class="flex justify-center gap-4">
-                                <button onclick="awardJeopardy(1)" class="bg-blue-800 hover:bg-blue-700 border border-blue-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">Team A</button>
-                                <button onclick="awardJeopardy(2)" class="bg-rose-800 hover:bg-rose-700 border border-rose-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">Team B</button>
-                                <button onclick="awardJeopardy(0)" class="bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-white font-bold py-4 px-10 rounded-xl transition text-xl">Nobody</button>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <div class="flex flex-col gap-2">
+                                    <button onclick="awardJeopardy(1, true)" class="bg-blue-800 hover:bg-blue-700 border border-blue-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg w-full">+ Team A</button>
+                                    <button onclick="awardJeopardy(1, false)" class="jeop-risky-btn hidden bg-blue-900/50 hover:bg-blue-800 border border-blue-800 text-blue-300 font-bold py-2 px-8 rounded-xl transition text-sm w-full">- Team A</button>
+                                </div>
+                                
+                                <div class="flex flex-col gap-2">
+                                    <button onclick="awardJeopardy(2, true)" class="bg-rose-800 hover:bg-rose-700 border border-rose-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg w-full">+ Team B</button>
+                                    <button onclick="awardJeopardy(2, false)" class="jeop-risky-btn hidden bg-rose-900/50 hover:bg-rose-800 border border-rose-800 text-rose-300 font-bold py-2 px-8 rounded-xl transition text-sm w-full">- Team B</button>
+                                </div>
+                                
+                                <div class="flex flex-col gap-2 justify-start">
+                                    <button onclick="awardJeopardy(0, true)" class="bg-zinc-700 hover:bg-zinc-600 border border-zinc-500 text-white font-bold py-3 px-8 rounded-xl transition text-lg h-full">Nobody</button>
+                                </div>
                             </div>
                         </div>
 
@@ -457,13 +483,21 @@
                     <!-- Q&A Area -->
                     <div class="lg:col-span-2 flex flex-col justify-end">
                         <div class="bg-zinc-900 border-2 border-amber-500/50 rounded-2xl p-10 mb-8 shadow-xl relative min-h-[250px] flex items-center justify-center text-center">
+                            <!-- NEW: 15-Second Timer Display -->
+                            <div id="mil-timer-display" class="hidden absolute top-4 right-4 bg-red-600/20 border-2 border-red-500 text-red-400 w-14 h-14 rounded-full flex items-center justify-center text-2xl font-mono font-bold shadow-[0_0_15px_rgba(239,68,68,0.4)]">15</div>
+                            
                             <h3 id="mil-q-text" class="text-2xl md:text-4xl text-white font-display italic leading-relaxed"></h3>
                         </div>
 
                         <!-- Lifelines -->
-                        <div class="flex justify-center gap-4 mb-8">
+                        <div class="flex justify-center gap-4 mb-6">
                             <button id="btn-5050" onclick="use5050()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold py-3 px-8 rounded-full border-2 border-amber-300 shadow-lg transition-all text-sm tracking-widest uppercase">50 / 50</button>
+                            <!-- NEW: Ask the Audience -->
+                            <button id="btn-audience" onclick="useAudience()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-full border-2 border-blue-300 shadow-lg transition-all text-sm tracking-widest uppercase">Ask Audience</button>
                         </div>
+                        
+                        <!-- NEW: Audience Poll Results -->
+                        <div id="mil-audience-poll" class="hidden bg-blue-900/40 border border-blue-500/50 p-5 rounded-xl mb-6 text-white text-sm font-medium shadow-inner"></div>
 
                         <div id="mil-options" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <!-- Answer buttons injected here -->
@@ -1097,7 +1131,34 @@
         // GAME 6: CULINARY JEOPARDY
         // ==========================================
         let jeopScoreA = 0, jeopScoreB = 0, currentJeopValue = 0, currentJeopCell = null;
-        let jeopTimeLeft = 30, jeopInitial = 30, jeopIsRunning = false, jeopTimerInterval;
+        let jeopTimeLeft = 30, jeopGlobalTime = 30, jeopIsRunning = false, jeopTimerInterval;
+        let jeopIsRisky = false;
+
+        function toggleJeopMode() {
+            jeopIsRisky = !jeopIsRisky;
+            const btn = document.getElementById('jeop-mode-btn');
+            const desc = document.getElementById('jeop-mode-desc');
+            const riskyBtns = document.querySelectorAll('.jeop-risky-btn');
+            
+            if(jeopIsRisky) {
+                btn.textContent = 'Risky Mode';
+                btn.className = 'bg-red-700 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-red-500 animate-pulse';
+                desc.textContent = 'Wrong answers deduct points!';
+                desc.classList.replace('text-zinc-500', 'text-red-400');
+                riskyBtns.forEach(b => b.classList.remove('hidden'));
+            } else {
+                btn.textContent = 'Normal (Safe)';
+                btn.className = 'bg-emerald-700 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg font-bold transition shadow-md border border-emerald-500';
+                desc.textContent = 'Wrong answers do not lose points.';
+                desc.classList.replace('text-red-400', 'text-zinc-500');
+                riskyBtns.forEach(b => b.classList.add('hidden'));
+            }
+        }
+
+        function adjustJeopGlobalTimer(amt) {
+            jeopGlobalTime = Math.max(5, jeopGlobalTime + amt);
+            document.getElementById('jeop-global-time-display').innerText = jeopGlobalTime;
+        }
 
         function initJeopardy() {
             jeopScoreA = 0; jeopScoreB = 0; document.getElementById('jeop-score-a').textContent = 0; document.getElementById('jeop-score-b').textContent = 0;
@@ -1132,12 +1193,11 @@
             if(jeopTimeLeft <= 10 && jeopTimeLeft > 0) d.classList.add('text-red-500', 'animate-pulse');
             else d.classList.remove('text-red-500', 'animate-pulse');
         }
-        function adjustJeopTimer(amt) {
-            if(!jeopIsRunning) { jeopInitial=Math.max(5,jeopInitial+amt); jeopTimeLeft=jeopInitial; updateJeopTimerDisplay(); }
-        }
+
         function startJeopTimer() {
             if(!jeopIsRunning && jeopTimeLeft > 0) {
                 jeopIsRunning = true;
+                document.getElementById('jeop-pause-btn').textContent = "Pause";
                 jeopTimerInterval = setInterval(() => {
                     jeopTimeLeft--; updateJeopTimerDisplay();
                     if(jeopTimeLeft <= 0) {
@@ -1147,8 +1207,16 @@
                 }, 1000);
             }
         }
-        function pauseJeopTimer() { jeopIsRunning = false; clearInterval(jeopTimerInterval); }
-        function resetJeopTimer() { jeopIsRunning = false; clearInterval(jeopTimerInterval); jeopTimeLeft = jeopInitial; updateJeopTimerDisplay(); }
+        
+        function pauseJeopTimer() { 
+            if (jeopIsRunning) {
+                jeopIsRunning = false; 
+                clearInterval(jeopTimerInterval); 
+                document.getElementById('jeop-pause-btn').textContent = "Resume";
+            } else {
+                startJeopTimer();
+            }
+        }
 
         function openJeopardyQ(catName, qObj, val, cellElement) {
             if(cellElement.classList.contains('opacity-0')) return;
@@ -1160,7 +1228,11 @@
             document.getElementById('jeop-answer-area').classList.add('hidden');
             document.getElementById('jeop-reveal-btn').classList.remove('hidden');
             document.getElementById('jeop-modal').classList.remove('hidden');
-            resetJeopTimer();
+            
+            // Auto-start the timer based on global clock settings
+            jeopTimeLeft = jeopGlobalTime;
+            updateJeopTimerDisplay();
+            startJeopTimer();
         }
 
         function cancelJeopardy() {
@@ -1170,10 +1242,19 @@
             document.getElementById('jeop-modal').classList.add('hidden');
         }
 
-        function awardJeopardy(team) {
+        function awardJeopardy(team, isPositive) {
             clearInterval(jeopTimerInterval); jeopIsRunning = false;
-            if(team===1) { jeopScoreA += currentJeopValue; document.getElementById('jeop-score-a').textContent = jeopScoreA; }
-            if(team===2) { jeopScoreB += currentJeopValue; document.getElementById('jeop-score-b').textContent = jeopScoreB; }
+            
+            let points = isPositive ? currentJeopValue : -currentJeopValue;
+            
+            if(team===1) { jeopScoreA += points; document.getElementById('jeop-score-a').textContent = jeopScoreA; }
+            if(team===2) { jeopScoreB += points; document.getElementById('jeop-score-b').textContent = jeopScoreB; }
+            
+            // If they got it wrong (deducted points), leave the modal open so the other team can try!
+            if (!isPositive && team !== 0) {
+                return;
+            }
+            
             currentJeopCell.classList.add('opacity-0', 'cursor-default'); currentJeopCell.classList.remove('hover:bg-zinc-700', 'active:translate-y-1');
             document.getElementById('jeop-modal').classList.add('hidden');
             
@@ -1189,15 +1270,33 @@
         let milDeck = [], milLevel = 0;
         const prizeLadder = [100, 500, 1000, 5000, 10000, 50000, 100000, 250000, 500000, 1000000];
         let currentMilQ = null;
+        
+        // Timer Variables
+        let milTimerInterval;
+        let milTimeLeft = 15;
+
+        // Sound Effects
+        const sndCorrect = new Audio('https://www.myinstants.com/media/sounds/extremely-loud-correct-buzzer.mp3');
+        const sndIncorrect = new Audio('https://www.myinstants.com/media/sounds/extremely-loud-incorrect-buzzer.mp3');
 
         function initMillionaire() {
             milLevel = 0;
             milDeck = shuffleArray([...mogulQuestions]).slice(0, 10);
             
+            clearInterval(milTimerInterval);
+            
+            // Reset Lifelines
             const btn5050 = document.getElementById('btn-5050');
             btn5050.disabled = false;
             btn5050.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-zinc-700', 'border-zinc-500');
             btn5050.classList.add('bg-amber-600', 'hover:bg-amber-500', 'border-amber-300');
+
+            const btnAudience = document.getElementById('btn-audience');
+            btnAudience.disabled = false;
+            btnAudience.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-zinc-700', 'border-zinc-500');
+            btnAudience.classList.add('bg-blue-600', 'hover:bg-blue-500', 'border-blue-300');
+            
+            document.getElementById('mil-audience-poll').classList.add('hidden');
 
             showView('millionaire');
             loadMilQuestion();
@@ -1217,6 +1316,9 @@
         }
 
         function loadMilQuestion() {
+            clearInterval(milTimerInterval);
+            document.getElementById('mil-audience-poll').classList.add('hidden');
+            
             if (milLevel >= 10) {
                 score = 1000000;
                 endGame("You are a 3-Star Michelin Chef! You won $1,000,000!");
@@ -1225,6 +1327,29 @@
             updateLadderUI();
             currentMilQ = milDeck[milLevel];
             
+            // 15 Second Timer Logic (Only for first 4 questions / Levels 0 to 3)
+            const timerDisplay = document.getElementById('mil-timer-display');
+            if (milLevel < 4) {
+                timerDisplay.classList.remove('hidden');
+                milTimeLeft = 15;
+                timerDisplay.textContent = milTimeLeft;
+                timerDisplay.classList.remove('text-red-600', 'animate-pulse');
+                
+                milTimerInterval = setInterval(() => {
+                    milTimeLeft--;
+                    timerDisplay.textContent = milTimeLeft;
+                    if (milTimeLeft <= 5) {
+                        timerDisplay.classList.add('text-red-600', 'animate-pulse');
+                    }
+                    if (milTimeLeft <= 0) {
+                        clearInterval(milTimerInterval);
+                        handleMilTimeout();
+                    }
+                }, 1000);
+            } else {
+                timerDisplay.classList.add('hidden');
+            }
+
             const qText = document.getElementById('mil-q-text');
             qText.parentElement.classList.remove('animate-pop-in'); void qText.parentElement.offsetWidth; qText.parentElement.classList.add('animate-pop-in');
             qText.textContent = currentMilQ.q;
@@ -1240,6 +1365,19 @@
                 btn.onclick = () => checkMilAnswer(idx, btn);
                 container.appendChild(btn);
             });
+        }
+
+        // Handles logic if timer runs out
+        function handleMilTimeout() {
+            const container = document.getElementById('mil-options');
+            Array.from(container.children).forEach(b => b.disabled = true);
+            sndIncorrect.play().catch(e => console.log("Audio blocked by browser"));
+            
+            Array.from(container.children)[currentMilQ.ans].classList.replace('bg-zinc-800', 'bg-emerald-600');
+            
+            const winnings = milLevel > 0 ? prizeLadder[milLevel - 1] : 0;
+            score = winnings;
+            setTimeout(() => endGame(`Time's Up! You walk away with $${winnings.toLocaleString()}.`), 2500);
         }
 
         function use5050() {
@@ -1261,7 +1399,57 @@
             });
         }
 
+        function useAudience() {
+            const btnAudience = document.getElementById('btn-audience');
+            if (btnAudience.disabled) return;
+            
+            btnAudience.disabled = true;
+            btnAudience.classList.remove('bg-blue-600', 'hover:bg-blue-500', 'border-blue-300');
+            btnAudience.classList.add('bg-zinc-700', 'border-zinc-500', 'opacity-50', 'cursor-not-allowed');
+
+            const pollDiv = document.getElementById('mil-audience-poll');
+            pollDiv.classList.remove('hidden');
+            pollDiv.innerHTML = '<span class="animate-pulse">The audience is voting...</span>';
+
+            setTimeout(() => {
+                let percentages = [0, 0, 0, 0];
+                const correctBoost = Math.floor(Math.random() * 20) + 55; // 55% to 75% accuracy
+                percentages[currentMilQ.ans] = correctBoost;
+                
+                let remaining = 100 - correctBoost;
+                const container = document.getElementById('mil-options');
+                
+                // Distribute remaining points only to visible options
+                let visibleIndices = [];
+                Array.from(container.children).forEach((btn, idx) => {
+                    if (idx !== currentMilQ.ans && btn.style.visibility !== 'hidden') {
+                        visibleIndices.push(idx);
+                    }
+                });
+
+                if (visibleIndices.length > 0) {
+                    for (let i = 0; i < visibleIndices.length - 1; i++) {
+                        let share = Math.floor(Math.random() * remaining);
+                        percentages[visibleIndices[i]] = share;
+                        remaining -= share;
+                    }
+                    percentages[visibleIndices[visibleIndices.length - 1]] = remaining;
+                }
+
+                let resultHTML = '<strong class="text-blue-300 uppercase tracking-widest block mb-3 border-b border-blue-500/50 pb-1">Audience Poll Results:</strong>';
+                const letters = ['A', 'B', 'C', 'D'];
+                currentMilQ.options.forEach((opt, idx) => {
+                    if (container.children[idx].style.visibility !== 'hidden') {
+                        resultHTML += `<div class="mb-1"><span class="inline-block w-8 font-black text-amber-400">${letters[idx]}:</span> ${percentages[idx]}%</div>`;
+                    }
+                });
+                
+                pollDiv.innerHTML = resultHTML;
+            }, 1200);
+        }
+
         function checkMilAnswer(selectedIndex, btnElement) {
+            clearInterval(milTimerInterval);
             const container = document.getElementById('mil-options');
             Array.from(container.children).forEach(b => b.disabled = true);
 
@@ -1270,12 +1458,14 @@
 
             setTimeout(() => {
                 if (selectedIndex === currentMilQ.ans) {
+                    sndCorrect.play().catch(e => console.log("Audio blocked by browser"));
                     btnElement.classList.replace('bg-amber-500', 'bg-emerald-600');
                     setTimeout(() => {
                         milLevel++;
                         loadMilQuestion();
                     }, 1500);
                 } else {
+                    sndIncorrect.play().catch(e => console.log("Audio blocked by browser"));
                     btnElement.classList.replace('bg-amber-500', 'bg-red-600');
                     btnElement.classList.add('animate-shake');
                     Array.from(container.children)[currentMilQ.ans].classList.replace('bg-zinc-800', 'bg-emerald-600');
